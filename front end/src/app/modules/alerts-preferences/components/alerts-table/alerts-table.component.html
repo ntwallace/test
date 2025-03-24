@@ -1,0 +1,48 @@
+<div class="table-responsive">
+  <table
+    mat-table
+    class="table align-items-center table-flush device-widget-table"
+    matSort
+    [dataSource]="dataSourceSig()"
+  >
+    <ng-container matColumnDef="name">
+      <th width="200" mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">
+        Location
+      </th>
+      <td width="200" mat-cell *matCellDef="let element; let i = index">
+        <a class="location-link" [routerLink]="computedLocationUrl(element)">{{ element.name }}</a>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="email">
+      <th width="300" mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">
+        Email Alerts
+      </th>
+      <td width="300" mat-cell *matCellDef="let element; let i = index">
+        <div class="toggle-wrapper" [class.disabled]="isLoadingAlertsMapSig()[element.id]">
+          <ng-toggle
+            [color]="{
+              unchecked: isLoadingAlertsMapSig()[element.id] ? '#dedede' : '#acacad',
+              checked: isLoadingAlertsMapSig()[element.id] ? '#dedede' : '#00acee'
+            }"
+            [value]="false"
+            [width]="toggleWidthSig()"
+            [height]="toggleHeightSig()"
+            [(ngModel)]="element.allowsEmails"
+            (valueChange)="updateEmailAlerts($event, element)"
+          ></ng-toggle>
+          <div class="toggle-status">{{ element.allowsEmails ? "Enabled" : "Disabled" }}</div>
+          @if (isLoadingAlertsMapSig()[element.id]) {
+            <mat-spinner [diameter]="18"></mat-spinner>
+          }
+        </div>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
+        <span>No Data Found</span>
+      </td>
+    </tr>
+  </table>
+</div>

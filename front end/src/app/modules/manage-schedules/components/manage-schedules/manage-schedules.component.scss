@@ -1,0 +1,59 @@
+.modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 3rem 2rem;
+}
+
+.modal-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 1.25rem;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.button {
+  align-self: flex-start;
+  min-width: 130px;
+  padding: 0.5rem 1rem;
+  font-size: 14px;
+}
+
+.schedule-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.schedule-item {
+  width: 100%;
+}
+
+.text-message {
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+@media (min-width: 576px) {
+  .schedule-item {
+    width: calc((100% - 1rem) / 2);
+  }
+}
+
+@media (min-width: 768px) {
+  .modal {
+    padding: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .schedule-item {
+    width: calc((100% - 2rem) / 3);
+  }
+}

@@ -1,0 +1,166 @@
+<div class="modal">
+  <button
+    class="close-button"
+    mat-dialog-close
+    [disabled]="isSubmittingName() || isSubmittingStatus() || isSubmittingFanMode()"
+  >
+    <mat-icon class="icon-close">close</mat-icon>
+  </button>
+  @if (isLoading()) {
+    <mat-spinner class="loader" [diameter]="80"></mat-spinner>
+  } @else {
+    <div class="modal-header">
+      @if (isEdit()) {
+        <div class="form-control">
+          <input
+            id="name"
+            type="text"
+            title="Rename"
+            [cdkTrapFocusAutoCapture]="isEdit()"
+            [cdkTrapFocus]="isEdit()"
+            [formControl]="nameControl"
+            class="form-control-input"
+            placeholder="Enter zone name"
+            (blur)="updateZoneName()"
+            (keyup.enter)="updateZoneName()"
+            [disabled]="isSubmittingName()"
+          />
+          @if (
+            nameControl &&
+            (nameControl.dirty || nameControl.touched) &&
+            nameControl.hasError("required")
+          ) {
+            <div class="alert">Name is required.</div>
+          }
+        </div>
+        @if (isSubmittingName()) {
+          <mat-spinner class="loading" [diameter]="18"></mat-spinner>
+        }
+      } @else {
+        <span class="modal-title">{{ nameControl.value }}</span>
+        <button type="button" class="action-btn" (click)="isEdit.set(true)">
+          <svg class="action-icon">
+            <use href="assets/images/icons/sprite.svg#icon-edit"></use>
+          </svg>
+        </button>
+      }
+    </div>
+    <div class="status-wrapper">
+      <div class="label">Device Lock</div>
+      <div class="lockout-wrapper">
+        <div class="status">
+          @if (isUnlocked()) {
+            <svg class="icon-unlocked">
+              <use href="assets/images/icons/sprite.svg#icon-unlocked"></use>
+            </svg>
+          } @else {
+            <svg class="icon-locked">
+              <use href="assets/images/icons/sprite.svg#icon-locked"></use>
+            </svg>
+          }
+          <div class="status-name" [class.unlocked]="isUnlocked()">
+            {{ isUnlocked() ? "Unlocked" : "Locked" }}
+          </div>
+        </div>
+        <div
+          class="toggle-wrapper"
+          [class.disabled]="isSubmittingFanMode() || isSubmittingStatus()"
+        >
+          @if (isSubmittingStatus()) {
+            <mat-spinner [diameter]="24"></mat-spinner>
+          } @else {
+            <ng-toggle
+              [color]="{
+                unchecked: '#bb0000',
+                checked: '#42a948'
+              }"
+              [width]="toggleWidth()"
+              [height]="toggleHeight()"
+              [formControl]="unlockedControl"
+              (valueChange)="updateLockStatus($event)"
+            ></ng-toggle>
+          }
+        </div>
+        <button
+          class="hint-btn"
+          type="button"
+          #statusTrigger="matMenuTrigger"
+          (mouseover)="statusTrigger.openMenu()"
+          (mouseleave)="statusTrigger.closeMenu()"
+          [matMenuTriggerFor]="statusHint"
+        >
+          <span class="exclamation">&#63;</span>
+        </button>
+        <mat-menu #statusHint="matMenu" xPosition="after" yPosition="below" [hasBackdrop]="false">
+          <p class="mat-menu-hint">
+            @if (isUnlocked()) {
+              An unlocked thermostat allows users to temporary override using the up/down buttons on
+              the thermostat, and change fan settings. Temporary override change the set point until
+              the next schedule change.
+            } @else {
+              A locked thermostat prevents users from modifying temperature settings on the
+              thermostat. Users can turn on and off the zone, but must use the PowerX platform to
+              manage HVAC settings.
+            }
+          </p>
+        </mat-menu>
+      </div>
+    </div>
+    <div class="fan-wrapper">
+      <div class="label">Fan Mode</div>
+      <div class="lockout-wrapper">
+        <div class="status">
+          <div class="icon-fan-wrapper">
+            <svg class="icon-fan">
+              <use href="assets/images/icons/sprite.svg#icon-fan"></use>
+            </svg>
+          </div>
+          <div class="status-name" [class.always-on]="isFanModeOn()">
+            {{ isFanModeOn() ? "Always On" : "Auto Off" }}
+          </div>
+        </div>
+        <div
+          class="toggle-wrapper"
+          [class.disabled]="isSubmittingFanMode() || isSubmittingStatus()"
+        >
+          @if (isSubmittingFanMode()) {
+            <mat-spinner [diameter]="24"></mat-spinner>
+          } @else {
+            <ng-toggle
+              [color]="{
+                unchecked: '#bb0000',
+                checked: '#42a948'
+              }"
+              [width]="toggleWidth()"
+              [height]="toggleHeight()"
+              (valueChange)="updateFanMode($event)"
+              [formControl]="fanModeControl"
+            ></ng-toggle>
+          }
+        </div>
+        <button
+          class="hint-btn"
+          type="button"
+          #fanTrigger="matMenuTrigger"
+          (mouseover)="fanTrigger.openMenu()"
+          (mouseleave)="fanTrigger.closeMenu()"
+          [matMenuTriggerFor]="fanHint"
+        >
+          <span class="exclamation">&#63;</span>
+        </button>
+        <mat-menu #fanHint="matMenu" xPosition="after" yPosition="below" [hasBackdrop]="false">
+          <p class="mat-menu-hint">
+            @if (isFanModeOn()) {
+              Always ON means that the fan is constantly on and blowing air when your HVAC system is
+              not heating or cooling air.
+            } @else {
+              Auto Off means that the fan turns on automatically only when your system is heating or
+              cooling air. Once the thermostat reaches the desired temperature, the entire system
+              shuts off until the next cycle.
+            }
+          </p>
+        </mat-menu>
+      </div>
+    </div>
+  }
+</div>

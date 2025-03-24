@@ -1,0 +1,13 @@
+<section class="temperature-units-card">
+  <app-temperature-units
+    (applianceIdEmit)="setApplianceId($event)"
+    [widgetIds]="temperatureUnitIdsSig()"
+    [applianceIds]="applianceIds"
+  ></app-temperature-units>
+</section>
+<section class="historic-temperature-card">
+  <app-historic-temperature
+    [widget]="historicTemperatureSig()"
+    [applianceIds]="applianceIds"
+  ></app-historic-temperature>
+</section>

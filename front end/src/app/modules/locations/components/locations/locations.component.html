@@ -1,0 +1,425 @@
+<div class="page-container">
+  @if (isLoadingSig()) {
+    <mat-spinner class="loader"></mat-spinner>
+  } @else {
+    @if (errorMessageSig()) {
+      <div class="error-wrapper">
+        <div class="main-message">{{ errorMessageSig() }}</div>
+        <div class="btn-wrapper">
+          <a [routerLink]="['/organizations']" class="button link">Select organization</a>
+        </div>
+      </div>
+    } @else {
+      <div class="header">
+        <div class="header-title">{{ organizationNameSig() }}</div>
+      </div>
+      <section class="monitored-locations">
+        <div class="table-title-wrapper">
+          <div class="table-title">Monitored Locations</div>
+          <div class="search-bar">
+            <label class="search-label">
+              <input
+                class="search-input"
+                type="text"
+                name="search"
+                id="search"
+                placeholder="Search"
+                (click)="$event.stopPropagation()"
+                [ngModel]="searchQuerySig()"
+                (ngModelChange)="changeSearchQuery($event)"
+              />
+              <div class="input-action">
+                @if (searchQuerySig()) {
+                  <button class="btn-clear-input" type="button" (click)="changeSearchQuery('')">
+                    <svg class="input-icon">
+                      <use href="assets/images/icons/sprite.svg#icon-x"></use>
+                    </svg>
+                  </button>
+                } @else {
+                  <svg class="input-icon">
+                    <use href="assets/images/icons/sprite.svg#icon-search"></use>
+                  </svg>
+                }
+              </div>
+            </label>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table
+            mat-table
+            class="table device-widget-table"
+            matSort
+            [dataSource]="locationsDataSourceSig()"
+            [trackBy]="trackById"
+          >
+            <ng-container matColumnDef="name">
+              <th
+                width="300"
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="table-header"
+              >
+                Name
+                <button
+                  #triggerNameFilter="matMenuTrigger"
+                  class="filter-btn"
+                  [matMenuTriggerFor]="filterNameMenu"
+                  [class.is-open]="triggerNameFilter.menuOpen"
+                  [class.active-dot]="isActiveNameFilterSig()"
+                  [disabled]="!nameFilterListSig().length"
+                  (click)="$event.stopPropagation()"
+                >
+                  <svg class="filter-icon" [class.active]="isActiveNameFilterSig()">
+                    <use href="assets/images/icons/sprite.svg#icon-filter_list"></use>
+                  </svg>
+                </button>
+                <mat-menu #filterNameMenu="matMenu" xPosition="before">
+                  <div class="filter-menu-header" (click)="$event.stopPropagation()">
+                    <div class="filter-search-bar">
+                      <label class="search-label">
+                        <input
+                          class="search-input"
+                          type="text"
+                          name="search"
+                          id="search"
+                          placeholder="Search"
+                          [ngModel]="searchQueryNameFilterSig()"
+                          (ngModelChange)="changeSearchQueryNameFilter($event)"
+                        />
+                        <div class="input-action">
+                          @if (searchQueryNameFilterSig()) {
+                            <button
+                              class="btn-clear-input"
+                              type="button"
+                              (click)="changeSearchQueryNameFilter('')"
+                            >
+                              <svg class="input-icon">
+                                <use href="assets/images/icons/sprite.svg#icon-x"></use>
+                              </svg>
+                            </button>
+                          } @else {
+                            <svg class="input-icon">
+                              <use href="assets/images/icons/sprite.svg#icon-search"></use>
+                            </svg>
+                          }
+                        </div>
+                      </label>
+                    </div>
+                    <div class="filter-btn-wrapper">
+                      <button
+                        class="btn-text primary clear"
+                        type="button"
+                        (click)="selectAllFilterItems(nameFilterSetSig, nameFilterListSig)"
+                      >
+                        Select All
+                      </button>
+                      <button
+                        class="btn-text primary clear"
+                        type="button"
+                        (click)="clearFilter(nameFilterSetSig)"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  </div>
+                  <ul class="mat-menu-list list" (click)="$event.stopPropagation()">
+                    @for (name of filteredNameFilterListSig(); track name) {
+                      <li class="mat-menu-item">
+                        <mat-checkbox
+                          class="mat-menu-checkbox"
+                          [color]="'primary'"
+                          [ngModel]="nameFilterSetSig().has(name)"
+                          (ngModelChange)="updateFilterSet(nameFilterSetSig, $event, name)"
+                        >
+                          {{ name }}
+                        </mat-checkbox>
+                      </li>
+                    }
+                  </ul>
+                </mat-menu>
+              </th>
+              <td width="300" mat-cell *matCellDef="let element">
+                <app-name-cell [data]="element"></app-name-cell>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="city">
+              <th
+                width="300"
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="table-header"
+              >
+                City
+                <button
+                  #triggerCityFilter="matMenuTrigger"
+                  class="filter-btn"
+                  [matMenuTriggerFor]="filterCityMenu"
+                  [class.is-open]="triggerCityFilter.menuOpen"
+                  [class.active-dot]="isActiveCityFilterSig()"
+                  [disabled]="!cityFilterListSig().length"
+                  (click)="$event.stopPropagation()"
+                >
+                  <svg class="filter-icon" [class.active]="isActiveCityFilterSig()">
+                    <use href="assets/images/icons/sprite.svg#icon-filter_list"></use>
+                  </svg>
+                </button>
+                <mat-menu #filterCityMenu="matMenu" xPosition="before">
+                  <div class="filter-menu-header" (click)="$event.stopPropagation()">
+                    <div class="filter-search-bar">
+                      <label class="search-label">
+                        <input
+                          class="search-input"
+                          type="text"
+                          name="search"
+                          id="search"
+                          placeholder="Search"
+                          [ngModel]="searchQueryCityFilterSig()"
+                          (ngModelChange)="changeSearchQueryCityFilter($event)"
+                        />
+                        <div class="input-action">
+                          @if (searchQueryCityFilterSig()) {
+                            <button
+                              class="btn-clear-input"
+                              type="button"
+                              (click)="changeSearchQueryCityFilter('')"
+                            >
+                              <svg class="input-icon">
+                                <use href="assets/images/icons/sprite.svg#icon-x"></use>
+                              </svg>
+                            </button>
+                          } @else {
+                            <svg class="input-icon">
+                              <use href="assets/images/icons/sprite.svg#icon-search"></use>
+                            </svg>
+                          }
+                        </div>
+                      </label>
+                    </div>
+                    <div class="filter-btn-wrapper">
+                      <button
+                        class="btn-text primary clear"
+                        type="button"
+                        (click)="selectAllFilterItems(cityFilterSetSig, cityFilterListSig)"
+                      >
+                        Select All
+                      </button>
+                      <button
+                        class="btn-text primary clear"
+                        type="button"
+                        (click)="clearFilter(cityFilterSetSig)"
+                      >
+                        Clear Filter
+                      </button>
+                    </div>
+                  </div>
+                  <ul class="mat-menu-list list" (click)="$event.stopPropagation()">
+                    @for (city of filteredCityFilterListSig(); track city) {
+                      <li class="mat-menu-item">
+                        <mat-checkbox
+                          class="mat-menu-checkbox"
+                          [color]="'primary'"
+                          [ngModel]="cityFilterSetSig().has(city)"
+                          (ngModelChange)="updateFilterSet(cityFilterSetSig, $event, city)"
+                        >
+                          {{ city }}
+                        </mat-checkbox>
+                      </li>
+                    }
+                  </ul>
+                </mat-menu>
+              </th>
+              <td width="300" mat-cell *matCellDef="let element">
+                {{ element?.city || "--" }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="state">
+              <th
+                width="300"
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="table-header"
+              >
+                State
+                <button
+                  #triggerStateFilter="matMenuTrigger"
+                  class="filter-btn"
+                  [matMenuTriggerFor]="filterStateMenu"
+                  [class.is-open]="triggerStateFilter.menuOpen"
+                  [class.active-dot]="isActiveStateFilterSig()"
+                  [disabled]="!stateFilterListSig().length"
+                  (click)="$event.stopPropagation()"
+                >
+                  <svg class="filter-icon" [class.active]="isActiveStateFilterSig()">
+                    <use href="assets/images/icons/sprite.svg#icon-filter_list"></use>
+                  </svg>
+                </button>
+                <mat-menu #filterStateMenu="matMenu" xPosition="before">
+                  <div class="filter-menu-header" (click)="$event.stopPropagation()">
+                    <div class="filter-search-bar">
+                      <label class="search-label">
+                        <input
+                          class="search-input"
+                          type="text"
+                          name="search"
+                          id="search"
+                          placeholder="Search"
+                          [ngModel]="searchQueryStateFilterSig()"
+                          (ngModelChange)="changeSearchQueryStateFilter($event)"
+                        />
+                        <div class="input-action">
+                          @if (searchQueryStateFilterSig()) {
+                            <button
+                              class="btn-clear-input"
+                              type="button"
+                              (click)="changeSearchQueryStateFilter('')"
+                            >
+                              <svg class="input-icon">
+                                <use href="assets/images/icons/sprite.svg#icon-x"></use>
+                              </svg>
+                            </button>
+                          } @else {
+                            <svg class="input-icon">
+                              <use href="assets/images/icons/sprite.svg#icon-search"></use>
+                            </svg>
+                          }
+                        </div>
+                      </label>
+                    </div>
+                    <div class="filter-btn-wrapper">
+                      <button
+                        class="btn-text primary clear"
+                        type="button"
+                        (click)="selectAllFilterItems(stateFilterSetSig, stateFilterListSig)"
+                      >
+                        Select All
+                      </button>
+                      <button
+                        class="btn-text primary clear"
+                        type="button"
+                        (click)="clearFilter(stateFilterSetSig)"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  </div>
+                  <ul class="mat-menu-list list" (click)="$event.stopPropagation()">
+                    @for (state of filteredStateFilterListSig(); track state) {
+                      <li class="mat-menu-item">
+                        <mat-checkbox
+                          class="mat-menu-checkbox"
+                          [color]="'primary'"
+                          [ngModel]="stateFilterSetSig().has(state)"
+                          (ngModelChange)="updateFilterSet(stateFilterSetSig, $event, state)"
+                        >
+                          {{ state }}
+                        </mat-checkbox>
+                      </li>
+                    }
+                  </ul>
+                </mat-menu>
+              </th>
+              <td width="300" mat-cell *matCellDef="let element">
+                {{ element?.state || "--" }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="electricityUsage">
+              <th
+                width="300"
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="table-header"
+              >
+                Electricity Usage (MTD)
+              </th>
+              <td width="300" mat-cell *matCellDef="let element">
+                @if (hasElectricityDashboard(element)) {
+                  <app-electricity-usage-cell
+                    [electricityUsage]="element.electricityUsageSig()"
+                  ></app-electricity-usage-cell>
+                } @else {
+                  -
+                }
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="usageChange">
+              <th
+                width="300"
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="table-header"
+              >
+                Usage Change (WoW)
+              </th>
+              <td width="300" mat-cell *matCellDef="let element">
+                @if (hasElectricityDashboard(element)) {
+                  <app-usage-change-cell
+                    [usageChange]="element.usageChangeSig()"
+                  ></app-usage-change-cell>
+                } @else {
+                  -
+                }
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="dayTrend">
+              <th width="300" mat-header-cell *matHeaderCellDef class="table-header">
+                3 Day Trend
+              </th>
+              <td width="300" class="chart-container" mat-cell *matCellDef="let element">
+                @if (hasElectricityDashboard(element)) {
+                  <app-chart-cell
+                    [location]="{
+                      name: element.name,
+                      timezone: element.timezone,
+                      daysTrend: element.energyUsageTrendSig().value,
+                      isLoading: element.energyUsageTrendSig().isLoading
+                    }"
+                  ></app-chart-cell>
+                } @else {
+                  -
+                }
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="alerts">
+              <th
+                width="300"
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="table-header"
+              >
+                Ongoing Alerts
+              </th>
+              <td width="300" mat-cell *matCellDef="let element; let i = index">
+                <app-alerts-cell
+                  [locationDetail]="{ id: element.id, organizationId: organizationIdSig() }"
+                  [alerts]="element.alertsSig()"
+                ></app-alerts-cell>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="settings">
+              <th width="300" mat-header-cell *matHeaderCellDef class="table-header">Settings</th>
+              <td width="300" mat-cell *matCellDef="let element">
+                <a [routerLink]="['/locations', element.id, 'settings']" class="btn-text"
+                  ><svg class="settings-icon">
+                    <use href="assets/images/icons/sprite.svg#icon-gear"></use></svg
+                ></a>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsSig(); sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsSig()"></tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumnsSig().length">
+                No Data Found
+              </td>
+            </tr>
+          </table>
+        </div>
+      </section>
+    }
+  }
+</div>

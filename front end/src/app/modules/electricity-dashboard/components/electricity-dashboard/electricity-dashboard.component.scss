@@ -1,0 +1,21 @@
+// ============== Main Graph ==============
+.energy-load-widget-card {
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+}
+
+// ============= Device Table Widget ===========
+.device-table {
+  &-widget {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .energy-load-widget-card,
+  .device-table-widget,
+  .system-health {
+    padding: 0 0.5rem;
+  }
+}

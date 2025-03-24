@@ -1,0 +1,184 @@
+<div class="modal" #modal>
+  <button
+    class="close-button"
+    mat-dialog-close
+    [disabled]="isSubmittingSig() || isSubmittingNameSig()"
+  >
+    <mat-icon class="icon-close">close</mat-icon>
+  </button>
+  @if (isLoadingSig()) {
+    <mat-spinner class="loader"></mat-spinner>
+  } @else {
+    <div class="modal-header">
+      @if (isEditNameSig()) {
+        <div class="form-control">
+          <input
+            id="name"
+            type="text"
+            title="Rename"
+            [cdkTrapFocusAutoCapture]="isEditNameSig()"
+            [cdkTrapFocus]="isEditNameSig()"
+            [formControl]="nameControl"
+            class="form-control-input"
+            placeholder="Enter zone name"
+            (blur)="updateName()"
+            (keyup.enter)="updateName()"
+            [disabled]="isSubmittingNameSig()"
+          />
+          @if (
+            nameControl &&
+            nameControl.hasError("required") &&
+            (nameControl.dirty || nameControl.touched)
+          ) {
+            <div class="alert">Name is required.</div>
+          }
+        </div>
+        @if (isSubmittingNameSig()) {
+          <mat-spinner class="loading" [diameter]="18"></mat-spinner>
+        }
+      } @else {
+        <span class="modal-title">{{ nameControl.value }}</span>
+        <button type="button" class="action-btn" (click)="isEditNameSig.set(true)">
+          <svg class="action-icon">
+            <use href="assets/images/icons/sprite.svg#icon-edit"></use>
+          </svg>
+        </button>
+      }
+    </div>
+    <div class="second-title">Appliance Type</div>
+    <div class="modal-text">
+      Select an appliance type to set up equipment groupings and configure alerts.
+    </div>
+    <div class="options-button-wrapper">
+      <div
+        class="options-button"
+        (click)="changeApplianceType('Fridge')"
+        [class.active]="applianceTypeSig() === 'Fridge'"
+      >
+        <img src="assets/images/fridge.png" alt="Fridge" width="50" />
+        <span>Fridge</span>
+      </div>
+      <div
+        class="options-button"
+        (click)="changeApplianceType('Freezer')"
+        [class.active]="applianceTypeSig() === 'Freezer'"
+      >
+        <img src="assets/images/freezer.png" alt="Freezer" width="50" />
+        <span>Freezer</span>
+      </div>
+      <div
+        class="options-button"
+        (click)="changeApplianceType('Other')"
+        [class.active]="applianceTypeSig() === 'Other'"
+      >
+        <span class="other-text">Other</span>
+      </div>
+    </div>
+    <div class="second-title">Normal Operating Range</div>
+    <div class="modal-text">
+      Each appliance can be configured to send alerts if the temperature is above or below preset
+      temperature ranges. These ranges are preconfigured based on USDA food safety recommendations
+      and can be edited.
+    </div>
+    <!-- In some cases the mat slider does not respond to range changes, 
+        so I added isMatSlisderRedrawToggle to force recalculation values 
+        and re-rendering of the slider when the appliance type changes. -->
+    @if (isMatSlisderRedrawToggle()) {
+      <ng-container *ngTemplateOutlet="matSlider"></ng-container>
+    } @else {
+      <ng-container *ngTemplateOutlet="matSlider"></ng-container>
+    }
+    <!-- ============================================================ -->
+    <div class="second-title" style="margin-top: 4rem">Minimum Alert Time Threshold</div>
+    <div class="alert-interval-wrapper">
+      <div class="minutes-control-wrapper">
+        <input
+          id="minutes"
+          type="number"
+          class="minutes-control-input"
+          [formControl]="alertControl"
+          step="1"
+          min="1"
+          max="999"
+        />
+        <span class="control-input-unit">minutes</span>
+      </div>
+      <div class="modal-text" style="margin-top: 0">
+        Alerts will only be triggered if the device is outside the above range continuously for more
+        than this amount of time.
+      </div>
+    </div>
+    @if (alertControl && alertControl.invalid && (alertControl.dirty || alertControl.touched)) {
+      <div class="alert">
+        @if (alertControl.hasError("required")) {
+          Minutes required
+        }
+        @if (alertControl.hasError("min")) {
+          Minimum alert time threshold is 1 minute
+        }
+        @if (alertControl.hasError("maxValue")) {
+          Maximum alert time threshold is 999 minutes (about 16.5 hours)
+        }
+      </div>
+    }
+    <div></div>
+    <button
+      type="button"
+      class="button submit-button"
+      (click)="onSubmit()"
+      [disabled]="
+        this.nameControl.invalid ||
+        (this.alertControl.invalid &&
+          (this.alertControl.hasError('required') || this.alertControl.hasError('min')))
+      "
+    >
+      @if (isSubmittingSig()) {
+        <mat-spinner class="loader white-fill" [diameter]="18"></mat-spinner>
+      } @else {
+        Save
+      }
+    </button>
+  }
+</div>
+
+<ng-template #matSlider>
+  <mat-slider
+    class="custom-mat-slider"
+    [min]="axisRangeSig()?.low || -20"
+    [max]="axisRangeSig()?.high || 70"
+  >
+    <div
+      *ngIf="leftLabelPositionSig() as leftPosition"
+      class="slider-left-label"
+      [ngStyle]="{ left: leftPosition }"
+    >
+      {{ startRangeSig() }}<span style="font-size: 11px">&deg;F</span>
+    </div>
+    <input
+      [ngModel]="startRangeSig()"
+      (ngModelChange)="updateGoodRangeStart($event)"
+      matSliderStartThumb
+      #startThumb
+      (dragEnd)="removeThumbFocus(startThumb)"
+    />
+    <div
+      *ngIf="rightLabelPositionSig() as rightPosition"
+      class="slider-left-label"
+      [ngStyle]="{ left: rightPosition }"
+    >
+      {{ endRangeSig() }}<span style="font-size: 11px">&deg;F</span>
+    </div>
+    <input
+      [ngModel]="endRangeSig()"
+      (ngModelChange)="updateGoodRangeEnd($event)"
+      matSliderEndThumb
+      #endThumb
+      (dragEnd)="removeThumbFocus(endThumb)"
+    />
+    <div class="ticks">
+      @for (tick of tickList(); track $index) {
+        <span class="tick">{{ tick }}</span>
+      }
+    </div>
+  </mat-slider>
+</ng-template>

@@ -1,0 +1,26 @@
+@if (alerts.isLoading) {
+  <ngx-skeleton-loader />
+} @else {
+  @if (alerts.value === 0) {
+    <div class="alerts">
+      {{ alerts.value }}
+      <svg class="alert-icon">
+        <use href="assets/images/icons/sprite.svg#icon-checkmark"></use>
+      </svg>
+    </div>
+  } @else if (alerts.value > 0) {
+    <div class="alerts ongoing">
+      <a
+        [routerLink]="['/organizations', locationDetail.organizationId, 'alerts']"
+        [queryParams]="{ locationId: locationDetail.id }"
+      >
+        {{ alerts.value }}
+        <svg class="alert-icon">
+          <use href="assets/images/icons/sprite.svg#icon-warning-triangle"></use>
+        </svg>
+      </a>
+    </div>
+  } @else {
+    -
+  }
+}

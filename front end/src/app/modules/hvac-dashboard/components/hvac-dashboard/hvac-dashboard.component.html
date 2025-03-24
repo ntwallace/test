@@ -1,0 +1,11 @@
+<section class="control-zones-widget">
+  <app-hvac-zones [widgetIds]="controlZoneIdsSig()"></app-hvac-zones>
+</section>
+<section class="zone-temperature-widget">
+  <app-zone-temperature-graph [widget]="controlZoneTrendsSig()"></app-zone-temperature-graph>
+</section>
+<section class="zone-temperature-widget">
+  <app-grouped-zone-temperature-graph
+    [widget]="controlZoneTemperaturesSig()"
+  ></app-grouped-zone-temperature-graph>
+</section>

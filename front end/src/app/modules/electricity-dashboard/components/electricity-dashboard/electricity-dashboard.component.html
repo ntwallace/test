@@ -1,0 +1,11 @@
+<section class="energy-load-widget-card">
+  <app-energy-load-curve [widget]="energyConsumptionSig()"></app-energy-load-curve>
+</section>
+<section class="device-table-widget">
+  <app-energy-consumption-table
+    [widget]="energyConsumptionTableSig()"
+  ></app-energy-consumption-table>
+</section>
+<section class="system-health">
+  <app-system-health [widget]="systemHealthSig()"></app-system-health>
+</section>

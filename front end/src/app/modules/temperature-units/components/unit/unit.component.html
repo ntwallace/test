@@ -1,0 +1,172 @@
+<div
+  class="unit-widget"
+  #unitCard
+  [class.danger]="isDangerClassSig()"
+  (ngxVisibility)="onResize()"
+  (click)="onClickFilterUnits()"
+>
+  @if (isLoading) {
+    <div class="unit-overlay">
+      <mat-spinner class="loader" [strokeWidth]="4" [diameter]="30"></mat-spinner>
+    </div>
+  }
+  <div class="top-icons-wrapper">
+    @if (unitDataSig()?.reading === null) {
+      <div class="status-wrapper" [title]="'N/A'">
+        <svg class="icon-battery">
+          <use href="assets/images/icons/sprite.svg#icon-battery_unknown"></use>
+        </svg>
+      </div>
+    }
+    <div
+      *ngIf="unitDataSig()?.reading as reading"
+      class="status-wrapper"
+      [title]="reading.batteryPercentage === null ? 'N/A' : reading.batteryPercentage + '%'"
+    >
+      @if (reading.batteryPercentage === null) {
+        <svg class="icon-battery">
+          <use href="assets/images/icons/sprite.svg#icon-battery_unknown"></use>
+        </svg>
+      } @else if (reading.batteryPercentage < 5) {
+        <div class="icon-battery" style="display: flex">
+          <img src="assets/images/icons/battery_0-5.png" alt="" width="100%" />
+        </div>
+      } @else if (reading.batteryPercentage < 16) {
+        <svg class="icon-battery">
+          <use href="assets/images/icons/sprite.svg#icon-battery_5-15"></use>
+        </svg>
+      } @else if (reading.batteryPercentage < 34) {
+        <svg class="icon-battery">
+          <use href="assets/images/icons/sprite.svg#icon-battery_15-33"></use>
+        </svg>
+      } @else if (reading.batteryPercentage < 51) {
+        <svg class="icon-battery">
+          <use href="assets/images/icons/sprite.svg#icon-battery_34-50"></use>
+        </svg>
+      } @else if (reading.batteryPercentage < 76) {
+        <svg class="icon-battery">
+          <use href="assets/images/icons/sprite.svg#icon-battery_51-75"></use>
+        </svg>
+      } @else if (reading.batteryPercentage <= 100) {
+        <svg class="icon-battery">
+          <use href="assets/images/icons/sprite.svg#icon-battery_76-100"></use>
+        </svg>
+      }
+    </div>
+    <div class="action-btn-wrapper">
+      <ng-container *ngIf="unitDataSig() as data">
+        @switch (data.appliance_type) {
+          @case ("Fridge") {
+            <img
+              class="icon-appliance"
+              title="Fridge"
+              src="assets/images/fridge.png"
+              alt="Fridge"
+              width="16"
+            />
+          }
+          @case ("Freezer") {
+            <img
+              class="icon-appliance"
+              title="Freezer"
+              src="assets/images/freezer.png"
+              alt="Freezer"
+              width="14"
+            />
+          }
+        }
+      </ng-container>
+      <button
+        [disabled]="!data || !isLocationEditorSig()"
+        type="button"
+        class="action-btn"
+        (click)="openEditModal($event)"
+        [title]="
+          isLocationEditorSig()
+            ? 'Add or modify appliance settings'
+            : 'You do not have enough permissions for this action'
+        "
+      >
+        <svg class="action-icon">
+          <use href="assets/images/icons/sprite.svg#icon-gear"></use>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <ng-container *ngIf="unitDataSig() as data">
+    <div class="widget-title-wrapper" [title]="data.name">
+      <span class="widget-title">{{ data.name }}</span>
+    </div>
+    <div class="widget-value">
+      @if (data.reading) {
+        <span>{{ data.reading.temperature | number: "0.0-1" }}<sup> &#9900;</sup>F</span>
+      } @else {
+        <span>N/A</span>
+      }
+    </div>
+    <div class="widget-time">
+      {{ data.reading ? data.reading.fromNow : "N/A" }}
+    </div>
+    <div class="range">
+      @if (currentTempPositionSig() !== null) {
+        <div
+          class="current-vertical-line"
+          [ngStyle]="{ left: currentTempPositionSig() + 'px' }"
+        ></div>
+      }
+      <div
+        *ngIf="alertRangePositionsSig() as alertRange"
+        class="alert-range"
+        [ngStyle]="{
+          left: alertRange.start + 'px',
+          width: alertRange.width + 'px',
+          'border-top-left-radius': alertRange.start <= 1 ? '0.5rem' : '',
+          'border-bottom-left-radius': alertRange.start <= 1 ? '0.5rem' : '',
+          'border-top-right-radius': alertRange.end >= unitWidthSig() - 2 ? '0.5rem' : '',
+          'border-bottom-right-radius': alertRange.end >= unitWidthSig() - 2 ? '0.5rem' : ''
+        }"
+      ></div>
+      <div
+        *ngIf="goodRangePositionsSig() as goodRange"
+        class="good-range"
+        [ngStyle]="{
+          left: goodRange.start + 'px',
+          width: goodRange.width + 'px',
+          'border-top-left-radius': goodRange.start <= 1 ? '0.5rem' : '',
+          'border-bottom-left-radius': goodRange.start <= 1 ? '0.5rem' : '',
+          'border-top-right-radius': goodRange.end >= unitWidthSig() - 2 ? '0.5rem' : '',
+          'border-bottom-right-radius': goodRange.end >= unitWidthSig() - 2 ? '0.5rem' : ''
+        }"
+      >
+        <div class="min-range" [ngStyle]="{ left: goodRangeLabelPositionSig() }">
+          {{
+            (data.low < axisRangeSig().low ? axisRangeSig().low : data.low) | number: "0.0-1"
+          }}&deg;F
+        </div>
+        <div class="max-range" [ngStyle]="{ right: goodRangeLabelPositionSig() }">
+          {{
+            (data.high > axisRangeSig().high ? axisRangeSig().high : data.high) | number: "0.0-1"
+          }}&deg;F
+        </div>
+      </div>
+    </div>
+    @if (!isLoading && data.disconnected) {
+      <div class="unit-overlay">
+        <svg class="icon-warning-triangle">
+          <use href="assets/images/icons/sprite.svg#icon-warning-triangle"></use>
+        </svg>
+        <div class="connection-lost">Connection Lost</div>
+        <div class="last-connection">
+          @if (data.reading) {
+            since {{ data.reading.lastReading | convertPastDateMonth: timezoneSig() }}
+          } @else {
+            No data received for {{ data.name }}
+          }
+        </div>
+      </div>
+    }
+  </ng-container>
+  @if (!unitDataSig() && !isLoading) {
+    <div class="error">Error Data</div>
+  }
+</div>

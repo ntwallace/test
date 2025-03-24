@@ -1,0 +1,130 @@
+<div class="sidebar" [class.open]="isShowSidebarSig()">
+  @if (isMobileViewSig()) {
+    <button type="button" class="burger-btn" (click)="closeSidebar()">
+      <svg class="btn-icon">
+        <use href="assets/images/icons/sprite.svg#icon-close"></use>
+      </svg>
+    </button>
+  }
+  <div class="powerx-top-logo-wrapper">
+    <img class="logo" src="assets/images/logo_white.svg" alt="PowerX Logo" />
+  </div>
+  <div class="username">{{ usernameSig() }}</div>
+  <div class="logo-wrapper" [class.grey-bg]="!organizationLogoSig()">
+    @if (organizationLogoSig()) {
+      <img class="logo" [src]="organizationLogoSig()" alt="" />
+    } @else {
+      Add logo here
+    }
+    @if (isOrganizationAdminSig()) {
+      <div class="edit-overlay" (click)="openUploadModal()">
+        <svg class="edit-icon">
+          <use href="assets/images/icons/sprite.svg#icon-edit"></use>
+        </svg>
+      </div>
+    }
+  </div>
+  <ul class="nav-list list">
+    <li class="nav-item" (click)="isMobileViewSig() && closeSidebar()">
+      <a
+        class="nav-link link"
+        [routerLink]="['/locations']"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <svg class="nav-icon">
+          <use href="assets/images/icons/sprite.svg#icon-home11"></use>
+        </svg>
+        <span class="nav-link-label">Overview</span>
+      </a>
+      @if (dashboardLinkSig() !== null) {
+        <a
+          class="nav-sub-link link"
+          [routerLink]="dashboardLinkSig()"
+          routerLinkActive="active"
+          [title]="locationNameSig()"
+        >
+          <div class="icon-linked-wrapper">
+            <img class="nav-linked-icon" src="assets/images/icons/linked.svg" alt="" />
+          </div>
+          <span class="nav-link-label">{{ locationNameSig() }}</span>
+        </a>
+      }
+    </li>
+    <li class="nav-item" (click)="isMobileViewSig() && closeSidebar()">
+      <a
+        class="nav-link link"
+        [routerLink]="['/organizations', organizationIdSig(), 'alerts']"
+        routerLinkActive="active"
+      >
+        <svg class="nav-icon alerts-icon">
+          <use href="assets/images/icons/sprite.svg#icon-bell"></use>
+        </svg>
+        <span class="nav-link-label">Alert Center</span>
+      </a>
+    </li>
+  </ul>
+  <ul class="nav-bottom-list list">
+    <li class="nav-item" (click)="closeSidebar()">
+      <a
+        class="nav-link link"
+        href="https://powerx.notion.site/b84dfb23d6574920ab713bb6c7cd8feb?v=90891728c8cd4ee180c4ec3fbb0722ab"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <svg class="nav-icon icon-help">
+          <use href="assets/images/icons/sprite.svg#icon-help"></use>
+        </svg>
+        <span class="nav-link-label">Help & Support</span>
+      </a>
+    </li>
+    @if (isOrganizationAdminSig()) {
+      <li class="nav-item" (click)="isMobileViewSig() && closeSidebar()">
+        <a
+          class="nav-link link"
+          [routerLink]="['/organizations', organizationIdSig(), 'settings']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <svg class="nav-icon">
+            <use href="assets/images/icons/sprite.svg#icon-user"></use>
+          </svg>
+          <span class="nav-link-label">Manage Users</span>
+        </a>
+      </li>
+    }
+    @if (isMultipleOrganizationsSig()) {
+      <li class="nav-item" (click)="isMobileViewSig() && closeSidebar(); switchOrganization()">
+        <a class="nav-link link" [routerLink]="['/organizations']">
+          <svg class="nav-icon icon-switch">
+            <use href="assets/images/icons/sprite.svg#icon-change"></use>
+          </svg>
+          <span class="nav-link-label">Switch Org.</span>
+        </a>
+      </li>
+    }
+    @if (isShowPreferencesLinkSig()) {
+      <li class="nav-item" (click)="isMobileViewSig() && closeSidebar()">
+        <a
+          class="nav-link link"
+          [routerLink]="['/organizations', organizationIdSig(), 'preferences']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <svg class="nav-icon icon-switch">
+            <use href="assets/images/icons/sprite.svg#icon-gear"></use>
+          </svg>
+          <span class="nav-link-label">Preferences</span>
+        </a>
+      </li>
+    }
+    <li class="nav-item">
+      <a class="nav-link link" (click)="logout()">
+        <svg class="nav-icon">
+          <use href="assets/images/icons/sprite.svg#icon-exit"></use>
+        </svg>
+        <span class="nav-link-label">Sign Out</span>
+      </a>
+    </li>
+  </ul>
+</div>

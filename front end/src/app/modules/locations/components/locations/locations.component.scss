@@ -1,0 +1,149 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 40px);
+}
+
+.monitored-locations {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5rem;
+}
+
+.header-title {
+  text-align: center;
+}
+
+.table {
+  &-title-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+
+  &-title {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  &-responsive {
+    margin-top: 1rem;
+  }
+
+  &-header {
+    white-space: nowrap;
+  }
+
+  .no-data-cell {
+    font-size: 16px;
+  }
+}
+
+.btn-text {
+  justify-content: flex-start;
+  white-space: nowrap;
+}
+
+.error-wrapper {
+  margin: auto;
+}
+
+.main-message {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.btn-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.button {
+  min-width: 120px;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.search-bar {
+  margin-left: auto;
+}
+
+.settings-icon {
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+  background-color: var(--bg-gray);
+  border-radius: 50%;
+}
+
+.filter-btn {
+  position: relative;
+  background-color: transparent;
+  border: none;
+  padding: 0.25rem;
+  outline: none;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  height: 26px;
+
+  .filter-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--main-font-color);
+    transition: color 0.1s var(--time-function);
+
+    &.active {
+      color: var(--primary);
+    }
+  }
+
+  &.active-dot::before {
+    content: "";
+    display: block;
+    position: absolute;
+    right: -2px;
+    top: 2px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--primary);
+  }
+
+  &:hover:not(:disabled) {
+    .filter-icon {
+      color: var(--primary);
+    }
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.device-widget-table.mat-mdc-table .no-data-cell {
+  padding: 0;
+  height: 52px;
+}
+
+@media (min-width: 1024px) {
+  .header-title {
+    text-align: unset;
+  }
+
+  .monitored-locations {
+    padding: 0 0.5rem;
+  }
+
+  .table-title-wrapper {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .search-bar {
+    margin-left: unset;
+  }
+}

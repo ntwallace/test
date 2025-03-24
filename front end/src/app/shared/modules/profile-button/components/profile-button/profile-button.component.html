@@ -1,0 +1,22 @@
+<button
+  [class.light]="isLight"
+  class="profile-button"
+  #profileTrigger="matMenuTrigger"
+  [matMenuTriggerFor]="profileMenu"
+  [matMenuTriggerRestoreFocus]="false"
+>
+  <span class="profile-label">Hi, {{ usernameSig() || "User" }}</span>
+  <mat-icon>arrow_drop_down</mat-icon>
+</button>
+<mat-menu #profileMenu="matMenu" xPosition="before" yPosition="below">
+  <ul class="mat-menu-list list">
+    <li class="mat-menu-item">
+      <a class="mat-menu-link link" (click)="logout()">
+        <svg class="mat-menu-icon">
+          <use href="assets/images/icons/sprite.svg#icon-logout"></use>
+        </svg>
+        <span>Log out</span>
+      </a>
+    </li>
+  </ul>
+</mat-menu>

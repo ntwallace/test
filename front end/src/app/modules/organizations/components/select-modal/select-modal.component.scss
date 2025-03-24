@@ -1,0 +1,41 @@
+.select-modal {
+  padding: 2rem;
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.select-wrapper {
+  width: 100%;
+}
+
+.filter-search-bar {
+  padding: 10px;
+}
+
+.search-input {
+  border: 1px solid var(--border-grey);
+  padding: 0.5rem;
+  padding-right: 32px;
+  border-radius: 0.25rem;
+}
+
+.input-action {
+  right: 12px;
+}
+
+.mat-list-item {
+  border-bottom: 1px solid var(--border-light-grey);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.search-option {
+  width: 100%;
+  padding: 1rem;
+}

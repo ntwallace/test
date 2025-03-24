@@ -1,0 +1,111 @@
+.datepicker {
+  --mdc-outlined-text-field-label-text-color: var(--main-font);
+  cursor: pointer;
+
+  .mat-mdc-form-field-input-control.mat-mdc-form-field-input-control {
+    font-size: 14px;
+  }
+
+  .mat-mdc-form-field-subscript-wrapper {
+    height: 0;
+    overflow: hidden;
+  }
+
+  .mat-date-range-input-wrapper {
+    font-weight: 500;
+  }
+}
+
+.mat-mdc-text-field-wrapper.mdc-text-field--outlined
+  .mdc-notched-outline--upgraded
+  .mdc-floating-label--float-above {
+  color: var(--primary);
+}
+
+// ====== MatCalendar Overlay ======
+.mat-calendar-body-selected {
+  font-weight: 600;
+}
+
+.mat-datepicker-content .mat-calendar {
+  width: 304px !important;
+}
+
+.mat-calendar {
+  font-family: inherit;
+}
+
+.mat-calendar-content {
+  font-family: inherit;
+}
+
+.mat-calendar-body-cell-content {
+  &:not(.mat-calendar-body-selected) {
+    color: var(--main-font-color);
+  }
+}
+
+.mat-mdc-form-field-type-mat-date-range-input .mat-mdc-form-field-infix {
+  width: 180px !important;
+}
+
+.mat-calendar-header {
+  padding-top: 0;
+}
+
+.datepicker-frequency {
+  width: 100%;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-grey);
+
+  &-title {
+    padding: 1rem;
+    padding-top: 1.5rem;
+    text-align: center;
+    color: var(--main-font-color);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  &-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 288px;
+    margin-left: 8px;
+    margin-right: 8px;
+    border-radius: 2rem;
+    background-color: var(--bg-gray);
+  }
+
+  &-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-basis: 33%;
+    padding: 0.75rem;
+    outline: none;
+    border: none;
+    border-radius: 2rem;
+    background-color: transparent;
+    color: var(--main-font-color);
+    font-size: 14px;
+    cursor: pointer;
+
+    &.active {
+      font-weight: 600;
+      color: var(--primary);
+      background-color: var(--bg-light-blue);
+    }
+  }
+}
+
+.mdc-button {
+  letter-spacing: inherit;
+}
+
+@media (min-width: 576px) {
+  .datepicker {
+    width: 100%;
+  }
+}

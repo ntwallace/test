@@ -1,0 +1,48 @@
+<div class="select-modal">
+  <div class="modal-title">Please select organization</div>
+  <mat-form-field
+    class="select-wrapper"
+    appearance="outline"
+    [class.is-open]="selectMenu.panelOpen"
+  >
+    <mat-select
+      #selectMenu
+      [formControl]="selectedItem"
+      (ngModelChange)="onChange(selectedItem.value)"
+      (opened)="inputFocus()"
+      (openedChange)="onOpenedChange($event)"
+    >
+      <div class="filter-search-bar">
+        <label class="search-label">
+          <input
+            #input
+            class="search-input"
+            type="text"
+            name="search"
+            id="search"
+            placeholder="Search"
+            [ngModel]="searchQuerySig()"
+            (ngModelChange)="changeSearchQuery($event)"
+          />
+          <div class="input-action">
+            @if (searchQuerySig()) {
+              <button class="btn-clear-input" type="button" (click)="changeSearchQuery('')">
+                <svg class="input-icon">
+                  <use href="assets/images/icons/sprite.svg#icon-x"></use>
+                </svg>
+              </button>
+            } @else {
+              <svg class="input-icon">
+                <use href="assets/images/icons/sprite.svg#icon-search"></use>
+              </svg>
+            }
+          </div>
+        </label>
+      </div>
+      @for (item of filteredOrganizationsSig(); track item.id) {
+        <mat-option class="mat-list-item" [value]="item">{{ item.name }}</mat-option>
+      }
+    </mat-select>
+    <mat-icon class="icon-arrow" matSuffix>expand_less</mat-icon>
+  </mat-form-field>
+</div>

@@ -1,0 +1,98 @@
+<div class="widget-header">
+  <div class="widget-title">Zone Temperature Trends Graph</div>
+  <div class="widget-selectors">
+    <app-datepicker
+      [startRange]="initialRange.start"
+      [endRange]="initialRange.end"
+      [timezone]="timezoneSig()"
+      (dateEvent)="changeRange($event)"
+      [isDisabled]="isLoadingSig()"
+    ></app-datepicker>
+    <button
+      #trigger="matMenuTrigger"
+      class="filter-button"
+      [matMenuTriggerFor]="filterMenu"
+      [class.is-open]="trigger.menuOpen"
+      [disabled]="isLoadingSig() || !zoneTempTrendsListSig().length || isErrorSig()"
+    >
+      <mat-icon>tune</mat-icon>
+      @if (innerWidthSig() >= 576 && !isLoadingSig()) {
+        <span class="filter-title">Filter Graph</span>
+      }
+      @if (isLoadingSig()) {
+        <mat-spinner class="loader" diameter="20"></mat-spinner>
+      }
+      <mat-icon class="icon-arrow">expand_less</mat-icon>
+    </button>
+    <mat-menu #filterMenu="matMenu" xPosition="before">
+      <div class="filter-menu-header" (click)="$event.stopPropagation()">
+        <div class="filter-search-bar">
+          <label class="search-label">
+            <input
+              class="search-input"
+              type="text"
+              name="search"
+              id="search"
+              placeholder="Search"
+              [ngModel]="searchQuerySig()"
+              (ngModelChange)="changeSearchQuery($event)"
+            />
+            <div class="input-action">
+              @if (searchQuerySig()) {
+                <button class="btn-clear-input" type="button" (click)="changeSearchQuery('')">
+                  <svg class="input-icon">
+                    <use href="assets/images/icons/sprite.svg#icon-x"></use>
+                  </svg>
+                </button>
+              } @else {
+                <svg class="input-icon">
+                  <use href="assets/images/icons/sprite.svg#icon-search"></use>
+                </svg>
+              }
+            </div>
+          </label>
+        </div>
+        <div class="filter-btn-wrapper">
+          <button class="btn-text primary clear" type="button" (click)="clearFilter()">
+            Clear Filter
+          </button>
+          <button class="btn-text primary clear" type="button" (click)="selectAll()">
+            Select All
+          </button>
+        </div>
+      </div>
+      <ul class="mat-menu-list list" (click)="$event.stopPropagation()">
+        @for (zone of filteredChartZoneListSig(); track zone.data.id) {
+          <li class="mat-menu-item">
+            <mat-checkbox
+              class="mat-menu-checkbox"
+              [ngModel]="zone.selected"
+              [color]="'primary'"
+              (ngModelChange)="updateSelectedSet($event, zone.data.id)"
+            >
+              {{ zone.data.name }}
+            </mat-checkbox>
+          </li>
+        }
+      </ul>
+    </mat-menu>
+  </div>
+</div>
+@if (isLoadingSig()) {
+  <div class="widget-no-data">
+    <mat-spinner></mat-spinner>
+  </div>
+} @else {
+  @if (chart && !isNoDataSig()) {
+    <div class="widget-chart" [chart]="chart"></div>
+  }
+  @if (isNoDataSig()) {
+    <div class="widget-no-data">
+      @if (isErrorSig()) {
+        Error Getting Data
+      } @else {
+        No Data
+      }
+    </div>
+  }
+}

@@ -1,0 +1,46 @@
+.maintance-page {
+  position: relative;
+  width: 100dvw;
+  height: 100dvh;
+  background-image: url("/assets/images/bg-maintance.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: bottom right;
+}
+
+.maintance-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 15%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  margin-top: 3rem;
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.description {
+  margin-top: 1rem;
+  line-height: 1.5rem;
+}
+
+.support-message {
+  margin-top: 3rem;
+  font-size: 14px;
+}
+
+.support-link {
+  text-decoration: none;
+  color: var(--primary);
+
+  transition: color 0.2s var(--time-function);
+
+  &:hover,
+  &:focus {
+    color: var(--primary-hover);
+  }
+}

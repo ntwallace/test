@@ -1,0 +1,77 @@
+<div class="add-modal">
+  <button [disabled]="isSubmitting()" class="close-button" mat-dialog-close>
+    <mat-icon class="icon-close">close</mat-icon>
+  </button>
+  <div class="modal-title">
+    <span>Add User</span>
+    <div class="title-icon-wrapper">
+      <svg class="title-icon">
+        <use href="assets/images/icons/sprite.svg#icon-person"></use>
+      </svg>
+    </div>
+  </div>
+  <form
+    class="form"
+    [formGroup]="userForm"
+    #form="ngForm"
+    (ngSubmit)="$event.preventDefault()"
+    (keyup.enter)="onSubmit()"
+  >
+    <div class="form-control">
+      <label class="label" for="firstName"><span>First Name</span></label>
+      <input
+        id="firstName"
+        formControlName="firstName"
+        type="text"
+        class="form-control-input"
+        placeholder="First Name"
+      />
+      @if (
+        firstName &&
+        firstName.invalid &&
+        (firstName.dirty || firstName.touched) &&
+        firstName.hasError("required")
+      ) {
+        <div class="alert"><sup>*</sup>First name is required.</div>
+      }
+    </div>
+    <div class="form-control">
+      <label class="label" for="lastName">Last Name</label>
+      <input
+        id="lastName"
+        formControlName="lastName"
+        type="text"
+        class="form-control-input"
+        placeholder="Last Name"
+      />
+      @if (
+        lastName &&
+        lastName.invalid &&
+        (lastName.dirty || lastName.touched) &&
+        lastName.hasError("required")
+      ) {
+        <div class="alert"><sup>*</sup>Last name is required.</div>
+      }
+    </div>
+    <div class="form-control-email">
+      <label class="label" for="email">Email</label>
+      <input
+        id="email"
+        formControlName="email"
+        type="text"
+        class="form-control-input"
+        placeholder="Email"
+      />
+      @if (email && email.invalid && (email.dirty || email.touched) && email.hasError("required")) {
+        <div class="alert"><sup>*</sup>Email is required.</div>
+      }
+    </div>
+  </form>
+  <button type="button" class="button submit-button" (click)="onSubmit()">
+    @if (isSubmitting()) {
+      <mat-spinner class="loader white-fill" [diameter]="18"></mat-spinner>
+    } @else {
+      <span>Next</span>
+    }
+  </button>
+</div>

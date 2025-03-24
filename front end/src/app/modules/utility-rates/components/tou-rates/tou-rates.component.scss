@@ -1,0 +1,43 @@
+.content-title {
+  color: var(--main-font-color);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: normal;
+}
+
+.content-subtitle {
+  margin-top: 0.75rem;
+  max-width: 950px;
+  line-height: 1.4;
+  color: var(--text-gray);
+  font-size: 14px;
+}
+
+.button {
+  margin-top: 2rem;
+  padding: 8px 16px;
+  min-width: 135px;
+  font-size: 14px;
+}
+
+.table-responsive {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.tabs-section {
+  margin-top: 2rem;
+}
+
+.tab-item {
+  min-width: 130px;
+}
+
+@media (min-width: 1024px) {
+  .table-responsive {
+    padding: 0 0.5rem;
+  }
+}

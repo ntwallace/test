@@ -1,0 +1,21 @@
+.main-content {
+  width: 100dvw;
+  height: 100%;
+  overflow-y: auto;
+  .page-content {
+    position: relative;
+    height: auto;
+    padding: 20px;
+    width: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .main-content {
+    width: calc(100dvw - 230px);
+    margin-left: 230px;
+    .page-content {
+      height: auto;
+    }
+  }
+}

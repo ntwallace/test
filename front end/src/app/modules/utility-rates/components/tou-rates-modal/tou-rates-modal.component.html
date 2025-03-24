@@ -1,0 +1,157 @@
+<div class="add-modal">
+  <button class="close-button" mat-dialog-close [disabled]="isSubmittingSig()">
+    <mat-icon class="icon-close">close</mat-icon>
+  </button>
+  <div class="modal-title">
+    <span>Add New TOU Rate</span>
+  </div>
+  <div class="modal-content">
+    <form class="form" [formGroup]="form">
+      <p class="error-message" *ngIf="nameErrorMessage">{{ nameErrorMessage }}</p>
+      <p class="error-message" *ngIf="costErrorMessage">{{ costErrorMessage }}</p>
+      <div class="inputs-wrapper">
+        <div class="form-control-wrapper">
+          <label class="form-input-label" for="name">Rate Name</label>
+          <div class="form-input-wrapper">
+            <input
+              id="name"
+              type="text"
+              class="form-input"
+              placeholder="Example: On Peak Summer"
+              autocomplete="false"
+              formControlName="name"
+              (ngModelChange)="removeNameError()"
+            />
+          </div>
+        </div>
+        <div class="form-control-wrapper">
+          <label class="form-input-label" for="cost">Dollars/kWh</label>
+          <div class="form-input-wrapper">
+            <input
+              id="cost"
+              type="number"
+              class="form-input"
+              step="0.01"
+              placeholder="Cost"
+              autocomplete="false"
+              formControlName="cost"
+              (ngModelChange)="removeCostError()"
+            />
+            <span>USD</span>
+          </div>
+        </div>
+      </div>
+      <div class="date-controls-wrapper">
+        <mat-form-field
+          appearance="outline"
+          [class.is-open]="startDate.opened"
+          (click)="$event.stopPropagation(); startDate.open()"
+        >
+          <mat-label>Select start date</mat-label>
+          <mat-icon matIconPrefix>calendar_month</mat-icon>
+          <input
+            matInput
+            [matDatepicker]="startDate"
+            readonly
+            formControlName="startDate"
+            (ngModelChange)="removeError()"
+          />
+          <mat-icon matIconSuffix class="icon-arrow">keyboard_arrow_up</mat-icon>
+          <mat-datepicker #startDate></mat-datepicker>
+        </mat-form-field>
+        <div style="display: flex; align-items: center" *ngIf="innerWidth > 575">&#8722;</div>
+        <mat-form-field
+          appearance="outline"
+          [class.is-open]="endDate.opened"
+          (click)="$event.stopPropagation(); endDate.open()"
+        >
+          <mat-label>Select end date</mat-label>
+          <mat-icon matIconPrefix>calendar_month</mat-icon>
+          <input
+            matInput
+            [matDatepicker]="endDate"
+            readonly
+            formControlName="endDate"
+            (ngModelChange)="removeError()"
+          />
+          <mat-icon matIconSuffix class="icon-arrow">keyboard_arrow_up</mat-icon>
+          <mat-datepicker #endDate></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="days-wrapper">
+        <div class="block-title">Days of the week</div>
+        <p class="error-message" *ngIf="daysErrorMessage">{{ daysErrorMessage }}</p>
+        <mat-selection-list class="selection-list" formControlName="daysWeek">
+          <mat-list-option
+            class="list-option"
+            color="primary"
+            *ngFor="let day of daysWeek"
+            [value]="day"
+            togglePosition="before"
+            (selectedChange)="removeDaysEror()"
+          >
+            {{ day }}
+          </mat-list-option>
+        </mat-selection-list>
+      </div>
+      <div class="divider"></div>
+      <div class="toggle-wrapper">
+        <div class="block-title">All Day</div>
+        <ng-toggle
+          (click)="$event.stopPropagation()"
+          [color]="{
+            unchecked: '#acacad',
+            checked: '#00acee'
+          }"
+          [width]="40"
+          [height]="22"
+          formControlName="allDay"
+        ></ng-toggle>
+      </div>
+      <div *ngIf="form.controls.allDay.value === false" class="time-picker-wrapper">
+        <input
+          class="time-input"
+          name="time-start"
+          type="time"
+          formControlName="dayStart"
+          step="1"
+        />
+        &nbsp;
+        <span class="time-pretext">TO</span>
+        &nbsp;
+        <input class="time-input" name="time-end" type="time" formControlName="dayEnd" step="1" />
+      </div>
+      <div class="divider"></div>
+      <div class="toggle-wrapper">
+        <div class="block-title-wrapper">
+          <div class="block-title">Make rate zone recurring</div>
+          <div class="block-subtitle">
+            Rate zone will recur during this date range in the following years.
+          </div>
+        </div>
+        <ng-toggle
+          (click)="$event.stopPropagation()"
+          [color]="{
+            unchecked: '#acacad',
+            checked: '#00acee'
+          }"
+          [width]="40"
+          [height]="22"
+          formControlName="recurring"
+        ></ng-toggle>
+      </div>
+      <div class="divider"></div>
+    </form>
+    <p class="error-message" *ngIf="errorMessage" style="margin-top: 1rem">
+      {{ errorMessage }}
+    </p>
+    <button type="button" class="button submit-button" (click)="onSubmit()">
+      <span *ngIf="!isSubmittingSig()">Add Rate</span>
+      <mat-spinner
+        *ngIf="isSubmittingSig()"
+        class="loader white-fill"
+        [diameter]="18"
+      ></mat-spinner>
+    </button>
+  </div>
+</div>

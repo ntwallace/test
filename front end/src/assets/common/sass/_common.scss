@@ -1,0 +1,98 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--main-font);
+  color: var(--main-font-color);
+  // letter-spacing: 0.0178571429em;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.list {
+  list-style: none;
+}
+
+.address {
+  font-style: normal;
+}
+
+.modal {
+  border-radius: 0.5rem;
+}
+
+.loader {
+  margin: auto;
+}
+
+.alert {
+  margin-top: 4px;
+  color: var(--text-danger);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.error-message {
+  margin-bottom: 1rem;
+  padding: 10px 15px;
+  border: 1px solid var(--border-danger);
+  border-radius: 0.25rem;
+  background-color: var(--bg-danger);
+  color: var(--text-danger);
+  line-height: 18px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.divider {
+  width: 100%;
+  border-bottom: 1px solid var(--border-grey);
+}
+
+.usage-source-chart .highcharts-container {
+  overflow: visible !important;
+}
+
+@media (min-width: 992px) {
+  ::-webkit-scrollbar {
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--border-grey);
+    border-radius: 10px;
+  }
+}

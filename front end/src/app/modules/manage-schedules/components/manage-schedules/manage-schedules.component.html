@@ -1,0 +1,40 @@
+<div class="modal">
+  <button class="close-button" mat-dialog-close>
+    <mat-icon class="icon-close">close</mat-icon>
+  </button>
+  <div class="modal-title">
+    <span>Manage Schedules</span>
+  </div>
+  <button
+    type="button"
+    class="button"
+    (click)="openAddModal()"
+    [disabled]="isLoadingSig() || !isLocationEditorSig()"
+  >
+    Add Schedule
+  </button>
+  <div class="schedule-list">
+    @if (isLoadingSig()) {
+      <mat-spinner class="loader"></mat-spinner>
+    } @else {
+      @if (scheduleListSig().length === 0) {
+        <div class="text-message">
+          @if (errorMessageSig()) {
+            {{ errorMessageSig() }}
+          } @else {
+            You have not created any schedules yet.
+          }
+        </div>
+      } @else {
+        @for (schedule of scheduleListSig(); track schedule.id) {
+          <app-schedule-card
+            [data]="schedule"
+            (updateEmit)="updateScheduleList($index, $event)"
+            (removeEmit)="removeFromScheduleList($event)"
+            class="schedule-item"
+          ></app-schedule-card>
+        }
+      }
+    }
+  </div>
+</div>

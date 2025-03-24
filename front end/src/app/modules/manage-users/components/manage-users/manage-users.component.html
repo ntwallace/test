@@ -1,0 +1,207 @@
+<div class="header">
+  <div class="header-wrapper">
+    <div class="header-icon-wrapper">
+      <svg class="header-icon">
+        <use href="assets/images/icons/sprite.svg#icon-user"></use>
+      </svg>
+    </div>
+    <div class="header-title-wrapper">
+      <div class="header-title">Manage Users</div>
+    </div>
+  </div>
+</div>
+<div class="filter-wrapper">
+  <div class="search-bar">
+    <label class="search-label">
+      <input
+        class="search-input"
+        type="text"
+        name="search"
+        id="search"
+        placeholder="Search"
+        [ngModel]="searchQuerySig()"
+        (ngModelChange)="changeSearchQuery($event)"
+      />
+      <div class="input-action">
+        @if (searchQuerySig()) {
+          <button class="btn-clear-input" type="button" (click)="changeSearchQuery('')">
+            <svg class="input-icon">
+              <use href="assets/images/icons/sprite.svg#icon-x"></use>
+            </svg>
+          </button>
+        } @else {
+          <svg class="input-icon">
+            <use href="assets/images/icons/sprite.svg#icon-search"></use>
+          </svg>
+        }
+      </div>
+    </label>
+  </div>
+  <app-add-user-button
+    [isDisabled]="!isOrganizationAdminSig()"
+    [accountList]="accountListSig()"
+    (accountEmit)="loadNewUser($event)"
+  ></app-add-user-button>
+</div>
+@if (isLoadingSig()) {
+  <div class="loader-wrapper">
+    <mat-spinner class="loader"></mat-spinner>
+  </div>
+} @else {
+  <div class="table-responsive">
+    <table
+      mat-table
+      class="table align-items-center table-flush device-widget-table"
+      matSort
+      [dataSource]="dataSourceSig()"
+      [trackBy]="trackById"
+    >
+      <ng-container matColumnDef="name">
+        <th width="300" mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">
+          User
+        </th>
+        <td width="300" mat-cell *matCellDef="let element; let i = index">
+          <div class="name-cell">
+            <div class="name-icon-wrapper">
+              <svg class="name-icon">
+                <use href="assets/images/icons/sprite.svg#icon-person"></use>
+              </svg>
+            </div>
+            <span>{{ element ? element.givenName + " " + element.familyName : "-" }}</span>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="email">
+        <th width="300" mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">
+          Email
+        </th>
+        <td width="300" mat-cell *matCellDef="let element; let i = index">
+          <div class="email-cell">
+            <span>{{ element?.email || "-" }}</span>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="organization">
+        <th width="200" mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">
+          Organization
+        </th>
+        <td width="200" mat-cell *matCellDef="let element; let i = index">
+          <div class="organization-cell">
+            @if (element.owner) {
+              Owner
+            } @else {
+              {{ organizationRoleName(element.organizationRoles) }}
+            }
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="locations">
+        <th width="250" mat-header-cell *matHeaderCellDef class="table-header">Locations</th>
+        <td width="250" mat-cell *matCellDef="let element; let i = index">
+          <div class="locations-cell">
+            @if (element.allLocationRoles.length) {
+              @switch (element.allLocationRoles[0]) {
+                @case ("ALL_LOCATION_ADMIN") {
+                  Admin of <span class="all-locations-text">ALL</span> Locations
+                }
+                @case ("ALL_LOCATION_VIEWER") {
+                  Viewer of <span class="all-locations-text">ALL</span> Locations
+                }
+                @case ("ALL_LOCATION_EDITOR") {
+                  Editor of <span class="all-locations-text">ALL</span> Locations
+                }
+              }
+            } @else if (element.perLocationRoles.length) {
+              @if (element.editors.length) {
+                <div class="per-location-roles" [matMenuTriggerFor]="editorMenu">
+                  Editor of {{ element.editors.length }}
+                  @if (element.editors.length > 1) {
+                    Locations
+                  } @else {
+                    Location
+                  }
+                </div>
+                <mat-menu #editorMenu="matMenu" class="location-menu">
+                  @for (location of element.editors; track location.location_id) {
+                    <div class="mat-location-menu-item">
+                      <span class="mat-location-menu-item-name">{{ location.name }}</span>
+                      <span>&nbsp;-&nbsp;</span>
+                      <span class="mat-location-menu-item-address" [title]="location.address">{{
+                        location.address
+                      }}</span>
+                    </div>
+                  }
+                </mat-menu>
+              }
+              @if (element.viewers.length) {
+                <div
+                  class="per-location-roles"
+                  [matMenuTriggerFor]="viewerMenu"
+                  #viewerTrigger="matMenuTrigger"
+                >
+                  Viewer of {{ element.viewers.length }}
+                  @if (element.viewers.length > 1) {
+                    Locations
+                  } @else {
+                    Location
+                  }
+                </div>
+                <mat-menu #viewerMenu="matMenu" yPosition="above" class="location-menu">
+                  @for (location of element.viewers; track location.location_id) {
+                    <div class="mat-location-menu-item">
+                      <span class="mat-location-menu-item-name">{{ location.name }}</span>
+                      <span>&nbsp;-&nbsp;</span>
+                      <span class="mat-location-menu-item-address" [title]="location.address">{{
+                        location.address
+                      }}</span>
+                    </div>
+                  }
+                </mat-menu>
+              }
+            } @else {
+              -
+            }
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="action">
+        <th width="200" mat-header-cell *matHeaderCellDef class="table-header">Action</th>
+        <td width="200" mat-cell *matCellDef="let element; let i = index">
+          <div class="action-cell">
+            <button
+              [disabled]="!isUserOwnerSig() && element.owner"
+              type="button"
+              class="action-btn"
+              (click)="openPermissionsModal(element)"
+            >
+              <svg class="action-icon">
+                <use href="assets/images/icons/sprite.svg#icon-edit"></use>
+              </svg>
+              <span>Edit</span>
+            </button>
+            <button
+              [disabled]="!isUserOwnerSig() && element.owner"
+              type="button"
+              class="action-btn danger-btn"
+              (click)="confirmDelete(element)"
+            >
+              <svg class="action-icon">
+                <use href="assets/images/icons/sprite.svg#icon-remove"></use>
+              </svg>
+              <span>Remove</span>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="dispayedColumnsSig(); sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: dispayedColumnsSig(); let i = index"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell no-data-cell" [attr.colspan]="dispayedColumnsSig().length">
+          @if (!isLoadingSig()) {
+            No Data Found
+          }
+        </td>
+      </tr>
+    </table>
+  </div>
+}

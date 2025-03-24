@@ -1,0 +1,87 @@
+<div class="schedule-card">
+  @if (isSubmittingSig()) {
+    <div class="schedule-loader">
+      <mat-spinner class="loader" [diameter]="30"></mat-spinner>
+    </div>
+  }
+  <div class="action-btn-wrapper">
+    <button
+      [disabled]="!isLocationEditorSig()"
+      type="button"
+      class="action-btn danger-btn"
+      (click)="confirmDelete()"
+      [title]="'Remove schedule'"
+    >
+      <svg class="action-icon">
+        <use href="assets/images/icons/sprite.svg#icon-remove"></use>
+      </svg>
+    </button>
+    <button
+      [disabled]="!isLocationEditorSig()"
+      type="button"
+      class="action-btn"
+      (click)="editSchedule()"
+      [title]="'Modify schedule'"
+    >
+      <svg class="action-icon">
+        <use href="assets/images/icons/sprite.svg#icon-edit"></use>
+      </svg>
+    </button>
+  </div>
+  <div class="schedule-title">{{ data.name }}</div>
+  <ul class="event-list list">
+    @for (event of data.events; track event) {
+      <li class="event-item">
+        <div class="time">{{ event.time | convert24To12Format }}</div>
+        <div class="set-point-wrapper">
+          @switch (event.mode) {
+            @case ("Heating") {
+              <svg class="icon-heat">
+                <use href="assets/images/icons/sprite.svg#icon-fire"></use>
+              </svg>
+              <div class="set-point">
+                {{ event.setPointF | number: "0.0-0" }}
+                <span class="set-point-unit">&nbsp;<sup>&#9900;</sup>F</span>
+              </div>
+            }
+            @case ("Cooling") {
+              <svg class="icon-cool">
+                <use href="assets/images/icons/sprite.svg#icon-cold"></use>
+              </svg>
+              <div class="set-point">
+                {{ event.setPointF | number: "0.0-0" }}
+                <span class="set-point-unit">&nbsp;<sup>&#9900;</sup>F</span>
+              </div>
+            }
+            @case ("Off") {
+              <svg class="icon-off">
+                <use href="assets/images/icons/sprite.svg#icon-off"></use>
+              </svg>
+              <div class="set-point">OFF</div>
+            }
+            @case ("Auto") {
+              <div class="icon-auto-wrapper">
+                <img
+                  class="icon-autochangeover"
+                  src="assets/images/icons/autochangeover.svg"
+                  alt=""
+                />
+              </div>
+              <div class="set-point">
+                {{
+                  (event.setPointHeatingF | number: "0.0-0") +
+                    " - " +
+                    (event.setPointCoolingF | number: "0.0-0")
+                }}
+                <span class="set-point-unit">&nbsp;<sup>&#9900;</sup>F</span>
+              </div>
+            }
+            @default {
+              <div class="set-point">N/A</div>
+            }
+          }
+        </div>
+      </li>
+    }
+  </ul>
+</div>

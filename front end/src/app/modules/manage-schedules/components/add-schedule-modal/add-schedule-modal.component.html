@@ -1,0 +1,239 @@
+<div class="modal">
+  <button class="close-button" mat-dialog-close [disabled]="isSubmittingSig()">
+    <mat-icon class="icon-close">close</mat-icon>
+  </button>
+  <div class="modal-title">
+    <span>{{ isEdit ? "Edit Schedule" : "New Schedule" }}</span>
+  </div>
+  <form class="form" [formGroup]="form">
+    <div class="form-control">
+      <label for="name" class="form-control-label">Name</label>
+      <div class="form-control-text-wrapper">
+        <input
+          id="name"
+          type="text"
+          class="form-control-input"
+          formControlName="name"
+          placeholder="Enter schedule name"
+        />
+      </div>
+      @if (
+        form.controls?.name.hasError("required") &&
+        (form.controls.name.dirty || form.controls.name.touched)
+      ) {
+        <div class="alert">Name is required.</div>
+      }
+    </div>
+    <div class="second-title">Events</div>
+    <div class="events-form-array" formArrayName="events">
+      @if (form.controls.events.value.length === 0) {
+        <div class="add-event-message">
+          Click&nbsp;<span class="add-event-text">+Add Event</span>&nbsp;to get started.
+        </div>
+      }
+      @for (
+        event of form.controls.events.controls;
+        track event.controls.id.getRawValue();
+        let i = $index
+      ) {
+        <div class="events-form-group">
+          <div class="event-controls-wrapper">
+            <div class="event-controls" [formGroupName]="i" #eventControlBox>
+              <mat-form-field
+                class="form-control-event-mode"
+                appearance="outline"
+                [class.is-open]="selectModeMenu.panelOpen"
+              >
+                <mat-select
+                  #selectModeMenu
+                  formControlName="mode"
+                  panelClass="warning-select"
+                  (selectionChange)="disableTempControls($event, event)"
+                >
+                  <mat-select-trigger class="mat-select-trigger">
+                    @switch (event.controls.mode.value) {
+                      @case ("Cooling") {
+                        <svg class="icon-cool">
+                          <use href="assets/images/icons/sprite.svg#icon-cold"></use>
+                        </svg>
+                      }
+                      @case ("Heating") {
+                        <svg class="icon-heat">
+                          <use href="assets/images/icons/sprite.svg#icon-fire"></use>
+                        </svg>
+                      }
+                      @case ("Off") {
+                        <svg class="icon-off">
+                          <use href="assets/images/icons/sprite.svg#icon-off"></use>
+                        </svg>
+                      }
+                      @case ("Auto") {
+                        <div class="icon-auto-wrapper">
+                          <img
+                            class="icon-autochangeover"
+                            src="assets/images/icons/autochangeover.svg"
+                            alt=""
+                          />
+                        </div>
+                      }
+                    }
+                    {{ event.controls.mode.value }}
+                  </mat-select-trigger>
+                  @for (mode of modeList; track mode) {
+                    <mat-option [value]="mode" class="mat-select-option">
+                      @switch (mode) {
+                        @case ("Cooling") {
+                          <svg class="icon-cool">
+                            <use href="assets/images/icons/sprite.svg#icon-cold"></use>
+                          </svg>
+                        }
+                        @case ("Heating") {
+                          <svg class="icon-heat">
+                            <use href="assets/images/icons/sprite.svg#icon-fire"></use>
+                          </svg>
+                        }
+                        @case ("Off") {
+                          <svg class="icon-off">
+                            <use href="assets/images/icons/sprite.svg#icon-off"></use>
+                          </svg>
+                        }
+                        @case ("Auto") {
+                          <div class="icon-auto-wrapper">
+                            <img
+                              class="icon-autochangeover"
+                              src="assets/images/icons/autochangeover.svg"
+                              alt=""
+                            />
+                          </div>
+                        }
+                      }
+                      {{ mode }}
+                    </mat-option>
+                  }
+                </mat-select>
+                <mat-icon class="icon-arrow" matSuffix>expand_less</mat-icon>
+              </mat-form-field>
+              <input
+                id="time"
+                formControlName="time"
+                type="time"
+                class="time-control-input"
+                [class.invalid]="event.controls.time.invalid"
+              />
+              @if (event.controls.mode.value !== "Auto") {
+                <div
+                  class="set-point-control"
+                  [class.disabled]="event.controls.mode.getRawValue() === 'Off'"
+                  [class.invalid]="event.controls.setPoint.invalid"
+                >
+                  <input
+                    id="setPoint"
+                    type="number"
+                    formControlName="setPoint"
+                    class="set-point-control-input"
+                    step="1"
+                    placeholder="Set Point"
+                    autocomplete="false"
+                    title="Set Point"
+                  />
+                  <span class="set-point-control-unit">&deg;F</span>
+                </div>
+              } @else {
+                <mat-slider
+                  class="custom-mat-slider autochangeover-slider"
+                  [min]="axisRange?.low || 45"
+                  [max]="axisRange?.high || 95"
+                >
+                  <div
+                    *ngIf="heatingLabelPosition(event, eventControlBox) as heatingLabelPosition"
+                    class="slider-heating-label"
+                    [ngStyle]="{ left: heatingLabelPosition }"
+                  >
+                    {{ event.controls.setPointHeatingF.value
+                    }}<span style="font-size: 11px">&deg;F</span>
+                  </div>
+                  <input
+                    formControlName="setPointHeatingF"
+                    matSliderStartThumb
+                    #startThumb
+                    (dragEnd)="removeThumbFocus(startThumb)"
+                    (valueChange)="validateHeatingSetPoint($event, event)"
+                  />
+                  <div
+                    *ngIf="coolingLabelPosition(event, eventControlBox) as coolingLabelPosition"
+                    class="slider-cooling-label"
+                    [ngStyle]="{ left: coolingLabelPosition }"
+                  >
+                    {{ event.controls.setPointCoolingF.value
+                    }}<span style="font-size: 11px">&deg;F</span>
+                  </div>
+                  <input
+                    formControlName="setPointCoolingF"
+                    matSliderEndThumb
+                    #endThumb
+                    (dragEnd)="removeThumbFocus(endThumb)"
+                    (valueChange)="validateCoolingSetPoint($event, event)"
+                  />
+                  <div class="ticks">
+                    @for (tick of tickList; track $index) {
+                      <span class="tick">
+                        @if (tick % 10 === 0) {
+                          {{ tick }}
+                        }
+                      </span>
+                    }
+                  </div>
+                </mat-slider>
+              }
+            </div>
+            <button type="button" class="action-btn danger-btn" (click)="removeControl(i)">
+              <svg class="action-icon">
+                <use href="assets/images/icons/sprite.svg#icon-remove"></use>
+              </svg>
+            </button>
+          </div>
+          @if (
+            event.controls?.time.hasError("required") &&
+            (event.controls.time.dirty || event.controls.time.touched)
+          ) {
+            <div class="alert">Time is required.</div>
+          }
+          @if (
+            event.controls?.setPoint.hasError("required") &&
+            (event.controls.setPoint.dirty || event.controls.setPoint.touched)
+          ) {
+            <div class="alert">Set point is required.</div>
+          }
+          @if (event.hasError("minRange")) {
+            <div class="alert">{{ event.errors["minRange"] }}</div>
+          }
+          @if (event.hasError("maxRange")) {
+            <div class="alert">{{ event.errors["maxRange"] }}</div>
+          }
+        </div>
+      }
+    </div>
+    @if (form.controls.events.hasError("atLeastOneItemRequired")) {
+      <div class="alert">At least one event is required.</div>
+    }
+    <div class="event-btn-wrapper">
+      <button type="button" class="btn-text primary" (click)="addEventControl()">+Add Event</button>
+    </div>
+  </form>
+  <button
+    type="button"
+    class="button submit-button"
+    (click)="onSubmit()"
+    [disabled]="
+      isSubmittingSig() ||
+      (form.controls.name.touched && form.controls.name.invalid) ||
+      !this.form.controls.events.value.length
+    "
+  >
+    @if (isSubmittingSig()) {
+      <mat-spinner class="loader" [diameter]="18"></mat-spinner>
+    } @else {
+      <span>{{ isEdit ? "Apply" : "Create" }}</span>
+    }
+  </button>
+</div>

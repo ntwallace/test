@@ -1,0 +1,51 @@
+<div class="widget-header">
+  <div class="widget-title">All Temperature Units</div>
+  <div class="search-bar">
+    <label class="search-label">
+      <input
+        class="search-input"
+        type="text"
+        name="search"
+        id="search"
+        placeholder="Search"
+        [ngModel]="searchQuerySig()"
+        (ngModelChange)="changeSearchQuery($event)"
+      />
+      <div class="input-action">
+        @if (searchQuerySig()) {
+          <button class="btn-clear-input" type="button" (click)="changeSearchQuery('')">
+            <svg class="input-icon">
+              <use href="assets/images/icons/sprite.svg#icon-x"></use>
+            </svg>
+          </button>
+        } @else {
+          <svg class="input-icon">
+            <use href="assets/images/icons/sprite.svg#icon-search"></use>
+          </svg>
+        }
+      </div>
+    </label>
+  </div>
+</div>
+<div class="widget-content">
+  @if (isLoadingSig()) {
+    <mat-spinner class="loader"></mat-spinner>
+  } @else {
+    @for (unit of filteredUnitListSig(); track unit.id) {
+      <app-unit
+        class="unit"
+        [data]="unit.data"
+        [hidden]="!unit.isShow"
+        [isLoading]="unit.isLoading"
+        (applianceIdEmit)="filterUnits($event)"
+        (refreshEmit)="loadUnitData(unit.id)"
+      ></app-unit>
+    }
+  }
+  @if (widgetIds?.length === 0) {
+    <div class="no-units">There are no appliances here yet.</div>
+  }
+  @if (convertedUnitListSig().length !== 0 && everyHiddenSig()) {
+    <div class="no-units">There are no appliances for this query.</div>
+  }
+</div>

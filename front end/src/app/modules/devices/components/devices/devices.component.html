@@ -1,0 +1,127 @@
+<div class="header">
+  <div class="header-wrapper">
+    <img src="assets/images/devices-wifi.png" alt="Wifi Icon" width="50" />
+    <div class="header-title-wrapper">
+      <div class="header-title">My Devices</div>
+    </div>
+  </div>
+</div>
+<div class="table-responsive">
+  <mat-spinner class="loader" *ngIf="isLoading"></mat-spinner>
+  <table
+    mat-table
+    class="table align-items-center table-flush my-device"
+    matSort
+    multiTemplateDataRows
+    [dataSource]="devicesTableData"
+    *ngIf="!isLoading"
+  >
+    <ng-container matColumnDef="expand_icon">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">Action</th>
+      <td mat-cell *matCellDef="let element; let i = index" width="75">
+        <div class="expand-button" (click)="toggleRow(element)">
+          <span *ngIf="expandedElement === element.id">-</span>
+          <span *ngIf="expandedElement !== element.id">+</span>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="device_name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">Devices</th>
+      <td mat-cell *matCellDef="let element; let i = index" width="400">
+        <div class="device-name-cell">
+          <div class="device-name-img">
+            <img src="assets/images/machine-q-sq.jpg" alt="Machine-Q Icon" width="150" />
+          </div>
+          <div>
+            <div class="device-name-title">
+              {{ element?.hub_name || "--" }}
+            </div>
+            <div class="device-name-id">ID: {{ element?.id || "--" }}</div>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="location">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">Location</th>
+      <td mat-cell *matCellDef="let element; let i = index" width="500">
+        <div class="location-cell">
+          <div>Location: {{ element?.area || "--" }}</div>
+          <div>Connected Sensors: {{ element.devices?.length || "--" }}</div>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="expandedDetail">
+      <td
+        mat-cell
+        *matCellDef="let ele"
+        [attr.colspan]="displayedColumns.length"
+        class="inner-cell"
+      >
+        <div
+          class="expanded-row"
+          *ngIf="ele.devices?.length"
+          [@detailExpand]="ele.id === expandedElement ? 'expanded' : 'collapsed'"
+        >
+          <div class="inner-table" *ngIf="expandedElement">
+            <table
+              class="w-100"
+              #innerTables
+              #innerSort="matSort"
+              mat-table
+              [dataSource]="ele.devices"
+              matSort
+            >
+              <ng-container matColumnDef="expand_icon">
+                <td mat-cell *matCellDef="let element" width="75"></td>
+              </ng-container>
+              <ng-container matColumnDef="device_name">
+                <td mat-cell *matCellDef="let element" width="400">
+                  <div class="device-name-cell">
+                    <div class="device-name-img">
+                      <img src="assets/images/sensor-white.png" alt="Sensor Icon" width="110" />
+                    </div>
+                    <div>
+                      <div class="device-name-title">
+                        {{ element?.device_name || "--" }}
+                      </div>
+                      <div class="device-name-id">ID: {{ element?.id || "--" }}</div>
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="location">
+                <td mat-cell *matCellDef="let element" width="500">
+                  <div class="location-cell">
+                    <div>Connected Coils: {{ element.coils?.length || "--" }}</div>
+                  </div>
+                </td>
+              </ng-container>
+              <tr mat-row *matRowDef="let row; columns: innerDisplayedColumns"></tr>
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell text-center" colspan="9999">No Data Found</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+    <tr
+      class="row-wrapper"
+      mat-row
+      *matRowDef="let row; columns: displayedColumns; let i = index"
+      [class.expanded-row]="expandedElement === row.id"
+      [class.element-row]="row.devices"
+    ></tr>
+    <tr
+      mat-row
+      *matRowDef="let element; columns: ['expandedDetail']"
+      class="detail-row"
+      [ngStyle]="{ display: expandedElement === element.id ? 'table-row' : 'none' }"
+    ></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
+        <span>No Data Found</span>
+      </td>
+    </tr>
+  </table>
+</div>

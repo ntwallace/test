@@ -1,0 +1,112 @@
+@if (isLoadingSig()) {
+  <div class="loader-wrapper">
+    <mat-spinner class="loader"></mat-spinner>
+  </div>
+} @else {
+  <div class="header">
+    <div class="header-title-wrapper">
+      <div class="header-title">
+        <span>{{ locationNameSig() }}</span>
+        @if (innerWidthSig() < 768) {
+          <a
+            class="setting-button setting-title-button"
+            [routerLink]="['/locations', locationIdSig(), 'settings']"
+            [title]="'Location settings'"
+          >
+            <mat-icon inline style="font-size: 20px">settings</mat-icon>
+          </a>
+        }
+      </div>
+      <div class="header-subtitle">
+        {{ locationaAddressSig() }}
+      </div>
+    </div>
+    @if (innerWidthSig() >= 768) {
+      <div class="header-buttons-wrapper">
+        <a
+          class="setting-button"
+          [routerLink]="['/locations', locationIdSig(), 'settings']"
+          [title]="'Location settings'"
+        >
+          <mat-icon>settings</mat-icon>
+        </a>
+      </div>
+    }
+  </div>
+  <div class="tabs-section">
+    <div class="tabs-wrapper">
+      @if (dashboardListSig().length === 0) {
+        <div class="tab-item active">
+          <div class="tab-title">Default</div>
+        </div>
+      }
+      @for (dashboard of dashboardListSig(); track dashboard.id) {
+        <a
+          class="tab-item link"
+          [routerLink]="['/locations', locationIdSig(), 'dashboards', dashboard.id]"
+          routerLinkActive="active"
+        >
+          @switch (dashboard.dashboard_type) {
+            @case (dashboardTypes.ELECTRICITY) {
+              @if (innerWidthSig() > 575) {
+                <div class="tab-icon-wrapper">
+                  <svg class="tab-icon icon-bolt">
+                    <use href="assets/images/icons/sprite.svg#icon-bolt"></use>
+                  </svg>
+                </div>
+              }
+              <div class="tab-title">
+                <span>Electricity</span>
+                <span>Monitoring</span>
+              </div>
+            }
+            @case (dashboardTypes.TEMPERATURE) {
+              @if (innerWidthSig() > 575) {
+                <div class="tab-icon-wrapper">
+                  <svg class="tab-icon">
+                    <use href="assets/images/icons/sprite.svg#icon-thermometer"></use>
+                  </svg>
+                </div>
+              }
+              <div class="tab-title">
+                <span>Temperature</span>
+                <span>Monitoring</span>
+              </div>
+            }
+            @case (dashboardTypes.HVAC) {
+              @if (innerWidthSig() > 575) {
+                <div class="tab-fan-icon-wrapper">
+                  <svg class="tab-icon icon-fan">
+                    <use href="assets/images/icons/sprite.svg#icon-fan"></use>
+                  </svg>
+                </div>
+              }
+              <div class="tab-title">
+                <span>HVAC</span>
+                <span>Control</span>
+              </div>
+            }
+            @default {
+              <div class="tab-title">Default</div>
+            }
+          }
+        </a>
+      }
+    </div>
+  </div>
+  @switch (selectedDashboardSig()?.dashboard_type) {
+    @case (dashboardTypes.ELECTRICITY) {
+      <app-electricity-dashboard
+        [dashboardId]="selectedDashboardSig().id"
+      ></app-electricity-dashboard>
+    }
+    @case (dashboardTypes.TEMPERATURE) {
+      <app-temperature-dashboard
+        [dashboardId]="selectedDashboardSig().id"
+      ></app-temperature-dashboard>
+    }
+    @case (dashboardTypes.HVAC) {
+      <app-hvac-dashboard [dashboardId]="selectedDashboardSig().id"></app-hvac-dashboard>
+    }
+  }
+}

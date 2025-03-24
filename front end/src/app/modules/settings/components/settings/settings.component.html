@@ -1,0 +1,86 @@
+<div class="page-container">
+  @if (isLoadingSig()) {
+    <mat-spinner class="loader"></mat-spinner>
+  } @else {
+    <div class="header">
+      <div class="header-wrapper">
+        @if (isMobileViewSig() === false) {
+          <svg class="header-icon">
+            <use href="assets/images/icons/sprite.svg#icon-gear"></use>
+          </svg>
+        }
+        <div class="header-title-wrapper">
+          <div class="header-title">
+            @if (isMobileViewSig()) {
+              <svg class="title-icon">
+                <use href="assets/images/icons/sprite.svg#icon-gear"></use>
+              </svg>
+            }
+            <span>Settings</span>
+          </div>
+          <div class="header-subtitle">
+            {{ locationNameSig() }}
+          </div>
+        </div>
+        <div class="header-buttons-wrapper">
+          <a [routerLink]="dashboardLinkSig()" class="btn-text">
+            <svg width="14" height="14">
+              <use href="assets/images/icons/sprite.svg#icon-arrow-left"></use>
+            </svg>
+            Back
+            @if (innerWidthSig() > 768) {
+              to Dashboard
+            }
+          </a>
+        </div>
+      </div>
+    </div>
+    @if (isMobileViewSig()) {
+      <div class="tabs-section">
+        <div class="tabs-wrapper">
+          @for (tab of tabList; track $index) {
+            <div
+              class="tab-item"
+              (click)="changeContent(tab.value)"
+              [class.active]="contentSig() === tab.value"
+            >
+              <div class="tab-title">
+                {{ tab.label }}
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+    <div class="main-settings">
+      @if (isMobileViewSig() === false) {
+        <ul class="settings-sidebar list">
+          <li
+            class="settings-sidebar-item"
+            (click)="changeContent('operating_hours')"
+            [class.active]="contentSig() === 'operating_hours'"
+          >
+            Store Hours
+          </li>
+          <li
+            class="settings-sidebar-item"
+            (click)="changeContent('utility_rates')"
+            [class.active]="contentSig() === 'utility_rates'"
+          >
+            Utility Rates
+          </li>
+        </ul>
+      }
+      <div class="setting-content">
+        @switch (contentSig()) {
+          @case ("operating_hours") {
+            <app-operating-hours class="operating-hours-wrapper"></app-operating-hours>
+          }
+          @case ("utility_rates") {
+            <app-utility-rates></app-utility-rates>
+          }
+        }
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,168 @@
+<div class="device-table-header">
+  <div class="device-table-title">Detailed Electricity Consumption & Cost</div>
+  <div class="device-table-datepicker">
+    <div class="search-bar">
+      <label class="search-label">
+        <input
+          class="search-input"
+          type="text"
+          name="search"
+          id="search"
+          placeholder="Search"
+          [ngModel]="searchQuerySig()"
+          (ngModelChange)="changeSearchQuery($event)"
+        />
+        <div class="input-action">
+          @if (searchQuerySig()) {
+            <button class="btn-clear-input" type="button" (click)="changeSearchQuery('')">
+              <svg class="input-icon">
+                <use href="assets/images/icons/sprite.svg#icon-x"></use>
+              </svg>
+            </button>
+          } @else {
+            <svg class="input-icon">
+              <use href="assets/images/icons/sprite.svg#icon-search"></use>
+            </svg>
+          }
+        </div>
+      </label>
+    </div>
+    <app-datepicker
+      [isDisabled]="isLoadingSig()"
+      [startRange]="initialRange.start"
+      [endRange]="initialRange.end"
+      (dateEvent)="changeRange($event)"
+      [timezone]="timezoneSig()"
+    ></app-datepicker>
+  </div>
+</div>
+<div class="table-wrapper">
+  @if (isLoadingSig()) {
+    <div class="loading-shade">
+      <mat-spinner class="loader" diameter="80"></mat-spinner>
+    </div>
+  }
+  <div class="table-responsive">
+    <table
+      mat-table
+      class="table align-items-center table-flush device-widget-table"
+      matSort
+      [dataSource]="dataSourceSig()"
+      [trackBy]="trackById"
+    >
+      <ng-container matColumnDef="device_name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">Devices</th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          @if (element.isEdit || element.isSubmitting) {
+            <div class="input-wrapper">
+              <input
+                id="{{ element.id }}"
+                type="text"
+                title="Rename"
+                placeholder="Enter circuit name"
+                class="name-input"
+                [class.invalid]="editValue === ''"
+                [disabled]="element.isSubmitting"
+                [cdkTrapFocusAutoCapture]="element.isEdit"
+                [cdkTrapFocus]="element.isEdit"
+                [value]="element.data.name"
+                (input)="changeEditValue($event)"
+                (blur)="cancelEdit(element)"
+                (keyup.escape)="cancelEdit(element)"
+                (keyup.enter)="saveChanges(element)"
+              />
+              @if (editValue === "") {
+                <div class="alert">Name is required.</div>
+              }
+              @if (element.isSubmitting) {
+                <mat-spinner [diameter]="18"></mat-spinner>
+              }
+            </div>
+          } @else {
+            <div class="device-name-cell">
+              <span>{{ element.data.name }}</span>
+              @if (element.data.name === "Other (Unmonitored Circuits)") {
+                <button
+                  class="hint-btn"
+                  type="button"
+                  #triggerOther="matMenuTrigger"
+                  (mouseover)="triggerOther.openMenu()"
+                  (mouseleave)="triggerOther.closeMenu()"
+                  [matMenuTriggerFor]="otherHint"
+                >
+                  &#63;
+                </button>
+                <mat-menu
+                  #otherHint="matMenu"
+                  xPosition="after"
+                  yPosition="below"
+                  [hasBackdrop]="false"
+                >
+                  <p class="mat-menu-hint">
+                    The "Other" represents usage of all devices in location which are not monitored
+                    by an individual clamp.
+                  </p>
+                </mat-menu>
+              } @else if (isLocationEditorSig()) {
+                <button type="button" class="action-btn" (click)="startEdit(element)">
+                  <svg class="action-icon">
+                    <use href="assets/images/icons/sprite.svg#icon-edit"></use>
+                  </svg>
+                </button>
+              }
+            </div>
+          }
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="usage">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">
+          Electricity Usage
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          {{ element.data.kwh | numberKwhFormat }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="cost">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">
+          Est. Electricity Cost
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <div class="cost-cell">
+            <span
+              >${{
+                element.data.cost | number: (element.data.cost < 100 ? "0.2-2" : "0.0-0")
+              }}</span
+            >
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="percentage">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-header">% of Total</th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <div class="percentage-cell">
+            <circle-progress
+              [percent]="element.data.percentage_of_total"
+              [animation]="false"
+              class="circle-progress"
+            ></circle-progress>
+            <span
+              >{{
+                element.data.percentage_of_total
+                  | number: (element.data.percentage_of_total < 10 ? "0.1-1" : "0.0-0")
+              }}%</span
+            >
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
+          @if (!isLoadingSig()) {
+            No Data Found
+          }
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

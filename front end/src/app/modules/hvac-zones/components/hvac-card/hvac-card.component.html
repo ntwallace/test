@@ -1,0 +1,187 @@
+<div class="zone-card" [class.hold]="isHoldClass()" [class.off]="isOffClass()">
+  @if (isLoading || isLocalLoading()) {
+    <div class="zone-overlay">
+      <mat-spinner class="loader" [strokeWidth]="4" [diameter]="30"></mat-spinner>
+    </div>
+  }
+  <ng-container *ngIf="zoneData() as data">
+    <div class="action-btn-wrapper">
+      <div class="status-wrapper" [title]="data.thermostatStatus | lockTitleTooltip">
+        @if (data.thermostatStatus === "Locked") {
+          <svg class="icon-locked">
+            <use href="assets/images/icons/sprite.svg#icon-locked"></use>
+          </svg>
+        } @else if (data.thermostatStatus === "Unlocked" || data.thermostatStatus === "NotLocked") {
+          <svg class="icon-unlocked">
+            <use href="assets/images/icons/sprite.svg#icon-unlocked"></use>
+          </svg>
+        } @else {
+          <span style="font-size: 12px">N/A</span>
+        }
+      </div>
+      <button
+        [disabled]="!data || !isLocationEditorSig()"
+        type="button"
+        class="action-btn settings-btn"
+        (click)="openEditZoneModal()"
+        title="Add or modify thermostat settings"
+      >
+        <svg class="action-icon">
+          <use href="assets/images/icons/sprite.svg#icon-gear"></use>
+        </svg>
+      </button>
+      <button
+        [disabled]="!data || !isLocationEditorSig()"
+        type="button"
+        class="action-btn"
+        (click)="openEditSchedulesModal()"
+        title="Add or modify thermostat schedule"
+      >
+        <svg class="action-icon">
+          <use href="assets/images/icons/sprite.svg#icon-calendar"></use>
+        </svg>
+      </button>
+    </div>
+    <div class="widget-title" [title]="data.name">{{ data?.name || "N/A" }}</div>
+    <div class="current-temp-value">
+      @if (data.zoneAir !== null) {
+        <span>{{ data.zoneAir | number: "0.0-1" }}</span>
+        <span class="current-temp-value-unit">&nbsp;<sup>&#9900;</sup>F</span>
+      } @else {
+        N/A
+      }
+    </div>
+    <div class="set-temp-wrapper">
+      @if (data.hvacHoldSince) {
+        @switch (data.hvacHoldAuthor) {
+          @case ("Dashboard") {
+            <div class="override-icon-wrapper" title="Override set in dashboard">
+              <svg class="icon-hold-override">
+                <use href="assets/images/icons/sprite.svg#icon-dashboard-click"></use>
+              </svg>
+            </div>
+          }
+          @case ("Thermostat") {
+            <div class="override-icon-wrapper" title="Override set manually on thermostat">
+              <svg class="icon-hold-override">
+                <use href="assets/images/icons/sprite.svg#icon-handle-touch"></use>
+              </svg>
+            </div>
+          }
+        }
+      }
+      @if (data.autoMode) {
+        @if (data.autoSetpointCoolingF !== null && data.autoSetpointHeatingF !== null) {
+          <div class="icon-auto-wrapper">
+            <img class="icon-autochangeover" src="assets/images/icons/autochangeover.svg" alt="" />
+          </div>
+          <div class="set-temp-value">
+            <span>{{
+              (data.autoSetpointHeatingF | number: "0.0-1") +
+                " - " +
+                (data.autoSetpointCoolingF | number: "0.0-1")
+            }}</span>
+            <span class="set-temp-value-unit">&nbsp;<sup>&#9900;</sup>F</span>
+          </div>
+        } @else {
+          N/A
+        }
+      } @else {
+        @if (data.hvacStatus !== null) {
+          @switch (data.hvacStatus) {
+            @case ("Cool") {
+              <svg class="icon-cool">
+                <use href="assets/images/icons/sprite.svg#icon-cold"></use>
+              </svg>
+            }
+            @case ("Heat") {
+              <svg class="icon-heat">
+                <use href="assets/images/icons/sprite.svg#icon-fire"></use>
+              </svg>
+            }
+            @case ("Off") {
+              <svg class="icon-off">
+                <use href="assets/images/icons/sprite.svg#icon-off"></use>
+              </svg>
+              <div class="set-temp-value">Off</div>
+            }
+          }
+          @if (data.hvacStatus !== "Off") {
+            <div class="set-temp-value">
+              @if (data.setPoint !== null) {
+                <span>{{ data.setPoint | number: "0.0-1" }}</span>
+                <span class="set-temp-value-unit">&nbsp;<sup>&#9900;</sup>F</span>
+              } @else {
+                N/A
+              }
+            </div>
+          }
+        } @else {
+          N/A
+        }
+      }
+    </div>
+    <div class="divider divider-top"></div>
+    @if (data.hvacHoldSince) {
+      <div class="schedule-title">Override Since:</div>
+      <div
+        class="current-schedule"
+        [title]="(data.hvacHoldSince | convertTime: timezoneSig()) || 'N/A'"
+      >
+        {{ data.hvacHoldSince | convertTime: timezoneSig() }}
+      </div>
+      <div [title]="formattedEventTime() || 'N/A'" class="schedule-next-event">
+        {{ formattedEventTime() }}
+      </div>
+    } @else {
+      <div class="schedule-title">Current Schedule:</div>
+      <div class="current-schedule" [title]="data?.currentSchedule?.name || 'None Set'">
+        @if (data.currentSchedule) {
+          {{ data.currentSchedule.name }}
+        } @else {
+          <span class="none-set-schedule">None Set</span>
+        }
+      </div>
+      <div class="schedule-next-event">{{ formattedEventTime() }}</div>
+    }
+    <div class="divider divider-bottom"></div>
+    @if (data.hvacHoldSince) {
+      <button
+        type="button"
+        class="button danger"
+        [disabled]="!isLocationEditorSig()"
+        (click)="onCancelHandler()"
+      >
+        Cancel Override
+      </button>
+    } @else {
+      <button
+        type="button"
+        class="button button-set-hold"
+        [disabled]="!isLocationEditorSig()"
+        (click)="openSetHoldModal()"
+      >
+        Temporary Override
+      </button>
+    }
+    @if (!isLoading && !isLocalLoading() && data.disconnected) {
+      <div class="zone-overlay">
+        <div class="widget-title" [title]="data.name">{{ data.name }}</div>
+        <svg class="icon-warning-triangle">
+          <use href="assets/images/icons/sprite.svg#icon-warning-triangle"></use>
+        </svg>
+        <div class="connection-lost">Connection Lost</div>
+        <div class="last-connection">
+          @if (data.lastReading) {
+            since {{ data.lastReading | convertPastDateMonth: timezoneSig() }}
+          } @else {
+            No data received for {{ data.name }}
+          }
+        </div>
+      </div>
+    }
+  </ng-container>
+  @if (!zoneData() && !isLoading) {
+    <div class="error">Error Data</div>
+  }
+</div>

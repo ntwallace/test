@@ -1,0 +1,22 @@
+.container {
+  padding: 0 20px;
+}
+
+@media screen and (min-width: $mobile-breakpoint) {
+  .container {
+    width: 480px;
+    margin: 0 auto;
+  }
+}
+
+@media screen and (min-width: $tablet-breakpoint) {
+  .container {
+    width: 768px;
+  }
+}
+
+@media screen and (min-width: $desktop-breakpoint) {
+  .container {
+    width: 1200px;
+  }
+}

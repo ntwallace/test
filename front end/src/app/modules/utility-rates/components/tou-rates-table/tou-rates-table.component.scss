@@ -1,0 +1,69 @@
+.action-btn {
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+  padding: 0.5rem 0rem;
+  border: none;
+  outline: none;
+  background: unset;
+  cursor: pointer;
+  transition: color 0.2s var(--time-function);
+
+  &:disabled {
+    cursor: no-drop;
+  }
+
+  &:not([disabled]):hover,
+  &:not([disabled]):focus {
+    color: var(--primary);
+  }
+}
+
+.danger-btn:not([disabled]):hover,
+.danger-btn:not([disabled]):focus {
+  color: var(--text-danger);
+}
+
+.action-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.no-data-cell {
+  text-align: center;
+  padding: 1rem !important;
+}
+
+.mat-icon {
+  color: var(--main-font-color);
+}
+
+.dates-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.recurring {
+  color: var(--text-green);
+}
+
+.days-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.cost-cell {
+  justify-content: center;
+}
+
+.button-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,11 @@
+<div class="page-container">
+  @if (isLoadingSig()) {
+    <mat-spinner class="loader"></mat-spinner>
+  } @else {
+    <div class="main-message">This location does not have any dashboards.</div>
+    <div class="btn-wrapper">
+      <a [routerLink]="['/organizations']" class="button link">Select organization</a>
+      <a [routerLink]="['/locations']" class="button link">Select location</a>
+    </div>
+  }
+</div>

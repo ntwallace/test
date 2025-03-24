@@ -1,0 +1,7 @@
+<div class="page-container">
+  @if (isLoading()) {
+    <mat-spinner class="loader"></mat-spinner>
+  } @else {
+    <div class="main-message">{{ errorMessage }}</div>
+  }
+</div>

@@ -1,0 +1,72 @@
+<div class="header">
+  <div class="header-wrapper">
+    @if (!isMobileViewSig()) {
+      <svg class="header-icon">
+        <use href="assets/images/icons/sprite.svg#icon-gear"></use>
+      </svg>
+    }
+    <div class="header-title-wrapper">
+      <div class="header-title">
+        @if (isMobileViewSig()) {
+          <svg class="title-icon">
+            <use href="assets/images/icons/sprite.svg#icon-gear"></use>
+          </svg>
+        }
+        <span>Preferences</span>
+      </div>
+    </div>
+  </div>
+</div>
+@if (isMobileViewSig() && !isLoadingSig()) {
+  <div class="tabs-section">
+    <div class="tabs-wrapper">
+      @for (tab of tabList; track tab.value) {
+        <div
+          class="tab-item"
+          (click)="changeContent(tab.value)"
+          [class.active]="contentSig() === tab.value"
+        >
+          <div class="tab-title">
+            {{ tab.label }}
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
+@if (isLoadingSig()) {
+  <div class="loader-wrapper">
+    <mat-spinner class="loader"></mat-spinner>
+  </div>
+} @else {
+  <div class="main-settings">
+    @if (!isMobileViewSig()) {
+      <ul class="settings-sidebar list">
+        <li
+          class="settings-sidebar-item"
+          (click)="changeContent('user')"
+          [class.active]="contentSig() === 'user'"
+        >
+          User Settings
+        </li>
+        <li
+          class="settings-sidebar-item"
+          (click)="changeContent('alerts')"
+          [class.active]="contentSig() === 'alerts'"
+        >
+          Alerts & Notifications
+        </li>
+      </ul>
+    }
+    <div class="setting-content">
+      @switch (contentSig()) {
+        @case ("user") {
+          <app-user-settings></app-user-settings>
+        }
+        @case ("alerts") {
+          <app-alerts-preferences></app-alerts-preferences>
+        }
+      }
+    </div>
+  </div>
+}

@@ -1,0 +1,94 @@
+<div class="energy-load-header">
+  <div class="energy-load-title">Electricity Consumption</div>
+  <div class="energy-load-selectors">
+    <app-datepicker
+      [isShowFrequency]="true"
+      [timezone]="timezoneSig()"
+      [startRange]="initialRange.start"
+      [endRange]="initialRange.end"
+      (dateEvent)="changeRange($event)"
+      [isDisabled]="isLoadingSig()"
+    ></app-datepicker>
+    <button
+      #trigger="matMenuTrigger"
+      class="filter-button"
+      [matMenuTriggerFor]="filterMenu"
+      [class.is-open]="trigger.menuOpen"
+      [disabled]="!filteredDevicesSig().length || isLoadingSig() || isErrorSig()"
+    >
+      <mat-icon>tune</mat-icon>
+      @if (innerWidthSig() >= 576 && !isLoadingSig()) {
+        <span class="filter-title">Filter Graph</span>
+      }
+      @if (isLoadingSig()) {
+        <mat-spinner class="loader" diameter="20"></mat-spinner>
+      }
+      <mat-icon class="icon-arrow">expand_less</mat-icon>
+    </button>
+    <mat-menu #filterMenu="matMenu" xPosition="before">
+      <div class="filter-menu-header" (click)="$event.stopPropagation()">
+        <div class="filter-search-bar">
+          <label class="search-label">
+            <input
+              class="search-input"
+              type="text"
+              name="search"
+              id="search"
+              placeholder="Search"
+              [ngModel]="searchQuerySig()"
+              (ngModelChange)="changeSearchQuery($event)"
+            />
+            <div class="input-action">
+              @if (searchQuerySig()) {
+                <button class="btn-clear-input" type="button" (click)="changeSearchQuery('')">
+                  <svg class="input-icon">
+                    <use href="assets/images/icons/sprite.svg#icon-x"></use>
+                  </svg>
+                </button>
+              } @else {
+                <svg class="input-icon">
+                  <use href="assets/images/icons/sprite.svg#icon-search"></use>
+                </svg>
+              }
+            </div>
+          </label>
+        </div>
+        <div class="filter-btn-wrapper">
+          <button class="btn-text primary clear" type="button" (click)="clearFilter()">
+            Clear Filter
+          </button>
+          <button class="btn-text primary clear" type="button" (click)="selectAll()">
+            Select All
+          </button>
+        </div>
+      </div>
+      <ul class="mat-menu-list list" (click)="$event.stopPropagation()">
+        @for (device of filteredDevicesSig(); track device.id) {
+          <li class="mat-menu-item">
+            <mat-checkbox
+              class="mat-menu-checkbox"
+              [color]="'primary'"
+              [ngModel]="selectedIdsSetSig().has(device.id)"
+              (ngModelChange)="updateSelectedIdsSet($event, device.id)"
+            >
+              {{ device.name }}
+            </mat-checkbox>
+          </li>
+        }
+      </ul>
+    </mat-menu>
+  </div>
+</div>
+@if (isLoadingSig()) {
+  <div class="energy-load-no-data"><mat-spinner></mat-spinner></div>
+} @else if (isNoDataSig()) {
+  <div class="energy-load-no-data">
+    @if (isErrorSig()) {
+      Error Getting Data
+    } @else {
+      No Data
+    }
+  </div>
+} @else {
+  <div class="energy-load-chart" [chart]="chart"></div>
+}

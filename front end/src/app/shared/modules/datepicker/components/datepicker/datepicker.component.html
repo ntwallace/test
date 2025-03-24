@@ -1,0 +1,65 @@
+<mat-form-field
+  class="datepicker"
+  appearance="outline"
+  [class.is-open]="picker.opened"
+  (click)="$event.stopPropagation(); picker.open()"
+>
+  <mat-label>Select date range</mat-label>
+  <mat-icon *ngIf="innerWidth >= 576" matIconPrefix>calendar_month</mat-icon>
+  <mat-date-range-input
+    [ngStyle]="{ display: timezone ? 'block' : 'none' }"
+    [formGroup]="rangeForm"
+    [rangePicker]="picker"
+    [max]="maxDate"
+    [min]="minDate"
+    xPosition="before"
+  >
+    <input matStartDate formControlName="start" placeholder="Start date" readonly />
+    <input matEndDate formControlName="end" placeholder="End date" readonly />
+  </mat-date-range-input>
+  <mat-spinner *ngIf="!timezone" class="loader" [diameter]="20"></mat-spinner>
+  <mat-icon
+    [ngStyle]="{ display: innerWidth < 576 && !timezone ? 'none' : 'block' }"
+    matIconSuffix
+    class="icon-arrow"
+    >keyboard_arrow_up</mat-icon
+  >
+  <mat-date-range-picker
+    #picker
+    [disabled]="isDisabled"
+    (closed)="onClose()"
+    (opened)="onOpen()"
+    [restoreFocus]="false"
+  ></mat-date-range-picker>
+</mat-form-field>
+<div class="datepicker-header" *ngIf="isShowFrequency">
+  <div class="datepicker-frequency" #datepickerFrequency>
+    <div class="datepicker-frequency-title">Data Frequency</div>
+    <div class="datepicker-frequency-actions">
+      <button
+        type="button"
+        class="datepicker-frequency-btn"
+        (click)="changeFrequency(5, 'minutes')"
+        [class.active]="frequency.size === 5"
+      >
+        5min
+      </button>
+      <button
+        type="button"
+        class="datepicker-frequency-btn"
+        (click)="changeFrequency(15, 'minutes')"
+        [class.active]="frequency.size === 15"
+      >
+        15min
+      </button>
+      <button
+        type="button"
+        class="datepicker-frequency-btn"
+        (click)="changeFrequency(1, 'hours')"
+        [class.active]="frequency.size === 1"
+      >
+        Hour
+      </button>
+    </div>
+  </div>
+</div>

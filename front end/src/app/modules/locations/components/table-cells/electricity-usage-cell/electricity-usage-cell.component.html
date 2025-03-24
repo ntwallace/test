@@ -1,0 +1,5 @@
+@if (electricityUsage.isLoading) {
+  <ngx-skeleton-loader />
+} @else {
+  {{ electricityUsage.value | numberKwhFormat }}
+}

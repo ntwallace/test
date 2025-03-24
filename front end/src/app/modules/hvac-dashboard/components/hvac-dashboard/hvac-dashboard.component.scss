@@ -1,0 +1,14 @@
+.control-zones-widget {
+  margin-top: 2rem;
+}
+
+.zone-temperature-widget {
+  margin-top: 3rem;
+}
+
+@media (min-width: 1024px) {
+  .control-zones-widget,
+  .zone-temperature-widget {
+    padding: 0 0.5rem;
+  }
+}

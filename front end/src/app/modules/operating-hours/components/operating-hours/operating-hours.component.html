@@ -1,0 +1,307 @@
+<div class="content-title">Set Store Hours</div>
+<div class="content-subtitle">
+  Configure standard hours of operation for this location. If this location is open 24 hours a day,
+  leave toggle "Closed" for all days. Add operating hours (clock in to clock out) to enable advanced
+  insights.
+</div>
+<form
+  #form="ngForm"
+  class="schedule-form"
+  [ngStyle]="{ display: isLoadingSig() ? 'none' : 'flex' }"
+  [formGroup]="weeklyScheduleForm"
+  (ngSubmit)="onSubmit()"
+>
+  @if (innerWidthSig() > 1024) {
+    <div class="form-controls-wrapper">
+      <div class="form-controls-column">
+        <div class="form-controller-header">
+          <div class="day-name"></div>
+          <div class="toggle-wrapper"></div>
+          <div class="day-start-header-wrapper" [class.header-min-width]="!isShowBgSig()">
+            <span class="time-picker-header">Clock In</span>
+          </div>
+        </div>
+        @for (day of daysWeek; track $index) {
+          <div class="form-controller" [formGroupName]="day">
+            <div class="day-name">{{ day | titlecase }}</div>
+            <div class="toggle-wrapper">
+              @if (isLocationEditorSig()) {
+                <ng-toggle
+                  [color]="{
+                    unchecked: '#acacad',
+                    checked: '#00acee'
+                  }"
+                  [width]="40"
+                  [height]="22"
+                  [value]="form.value[day].isShowHours"
+                  formControlName="isShowHours"
+                ></ng-toggle>
+              }
+              <span class="toggle-status">{{
+                form.value[day].isShowHours ? "Open" : "Closed"
+              }}</span>
+            </div>
+
+            <div class="day-start-wrapper">
+              @if (form.value[day].isShowHours) {
+                <input
+                  class="time-input"
+                  name="{{ day }}-start"
+                  type="time"
+                  [value]="form.value[day].start"
+                  formControlName="start"
+                  [readOnly]="!isLocationEditorSig()"
+                  [ngClass]="{
+                    disabled: !isLocationEditorSig(),
+                    invalid: weeklyScheduleForm.controls[day].controls.start.invalid
+                  }"
+                />
+                @if (weeklyScheduleForm.controls[day].controls.start.hasError("required")) {
+                  <div class="alert">Time is required.</div>
+                }
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="operating-hours-wrapper" [ngClass]="{ 'form-bg': isShowBgSig() }">
+        <div class="form-controls-column">
+          <div class="form-controller-header">
+            <div class="day-open-header-wrapper" [class.header-min-width]="!isShowBgSig()">
+              <span class="time-picker-header">Open</span>
+            </div>
+          </div>
+          @for (day of daysWeek; track $index) {
+            <div class="form-controller" [formGroupName]="day">
+              <div class="day-open-wrapper">
+                @if (form.value[day].isShowHours) {
+                  <input
+                    class="time-input"
+                    name="{{ day }}-open"
+                    type="time"
+                    [value]="form.value[day].open"
+                    formControlName="open"
+                    [readOnly]="!isLocationEditorSig()"
+                    [ngClass]="{
+                      disabled: !isLocationEditorSig(),
+                      invalid: weeklyScheduleForm.controls[day].controls.open.invalid
+                    }"
+                  />
+                  @if (weeklyScheduleForm.controls[day].controls.open.hasError("required")) {
+                    <div class="alert">Time is required.</div>
+                  }
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="form-controls-column">
+          <div class="form-controller-header">
+            <div class="time-pretext-header"></div>
+          </div>
+          @for (day of daysWeek; track $index) {
+            <div class="form-controller">
+              <div class="time-pretext-wrapper">
+                @if (form.value[day].isShowHours) {
+                  <span class="time-pretext">to</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="form-controls-column">
+          <div class="form-controller-header">
+            <div class="day-close-header-wrapper" [class.header-min-width]="!isShowBgSig()">
+              <span class="time-picker-header">Close</span>
+            </div>
+          </div>
+          @for (day of daysWeek; track $index) {
+            <div class="form-controller" [formGroupName]="day">
+              <div class="day-close-wrapper">
+                @if (form.value[day].isShowHours) {
+                  <input
+                    class="time-input"
+                    name="{{ day }}-close"
+                    type="time"
+                    [value]="form.value[day].close"
+                    formControlName="close"
+                    [readOnly]="!isLocationEditorSig()"
+                    [ngClass]="{
+                      disabled: !isLocationEditorSig(),
+                      invalid: weeklyScheduleForm.controls[day].controls.close.invalid
+                    }"
+                  />
+                  @if (weeklyScheduleForm.controls[day].controls.close.hasError("required")) {
+                    <div class="alert">Time is required.</div>
+                  }
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="form-controls-column">
+        <div class="form-controller-header">
+          <div class="day-end-header-wrapper" [class.header-min-width]="!isShowBgSig()">
+            <span class="time-picker-header">Clock Out</span>
+          </div>
+          @if (isLocationEditorSig()) {
+            <div class="copy-btn"></div>
+          }
+        </div>
+        @for (day of daysWeek; track $index) {
+          <div class="form-controller" [formGroupName]="day">
+            <div class="day-end-wrapper">
+              @if (form.value[day].isShowHours) {
+                <input
+                  class="time-input"
+                  name="{{ day }}-end"
+                  type="time"
+                  [value]="form.value[day].end"
+                  formControlName="end"
+                  [readOnly]="!isLocationEditorSig()"
+                  [ngClass]="{
+                    disabled: !isLocationEditorSig(),
+                    invalid: weeklyScheduleForm.controls[day].controls.end.invalid
+                  }"
+                />
+                @if (weeklyScheduleForm.controls[day].controls.end.hasError("required")) {
+                  <div class="alert">Time is required.</div>
+                }
+              }
+            </div>
+            @if (form.value[day].isShowHours && isLocationEditorSig()) {
+              <div class="copy-btn" (click)="setValueToAll(form.value[day])">+ Copy to all</div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="mobile-controls-wrapper">
+      @for (day of daysWeek; track $index) {
+        <div
+          class="mobile-card"
+          [formGroupName]="day"
+          [ngClass]="{ active: form.value[day].isShowHours }"
+        >
+          <div class="card-header">
+            <div class="card-name">
+              <span>{{ day | titlecase }}</span>
+              @if (form.value[day].isShowHours && isLocationEditorSig()) {
+                <div class="mobile-copy-btn" (click)="setValueToAll(form.value[day])">
+                  + Copy to all
+                </div>
+              }
+            </div>
+            <div class="mobile-toggle-wrapper">
+              @if (isLocationEditorSig()) {
+                <ng-toggle
+                  [color]="{
+                    unchecked: '#acacad',
+                    checked: '#00acee'
+                  }"
+                  [width]="44"
+                  [height]="24"
+                  [value]="form.value[day].isShowHours"
+                  formControlName="isShowHours"
+                ></ng-toggle>
+              }
+              <span class="mobile-toggle-status" [class.active]="form.value[day].isShowHours">{{
+                form.value[day].isShowHours ? "Open" : "Closed"
+              }}</span>
+            </div>
+          </div>
+          <div class="store-hours-wrapper">
+            <div class="mobile-card-column">
+              <div class="store-hours-name">Open Hours</div>
+              <div class="store-hours-name">Operating</div>
+            </div>
+            <div class="mobile-card-column">
+              <div class="mobile-time-input-wrapper">
+                <input
+                  class="mobile-time-input"
+                  [class.invalid]="weeklyScheduleForm.controls[day].controls.start.invalid"
+                  type="time"
+                  [value]="form.value[day].start"
+                  formControlName="start"
+                  [readOnly]="!isLocationEditorSig()"
+                />
+                @if (weeklyScheduleForm.controls[day].controls.start.hasError("required")) {
+                  <div class="alert">Time is required.</div>
+                }
+              </div>
+              <div class="mobile-time-input-wrapper">
+                <input
+                  class="mobile-time-input"
+                  [class.invalid]="weeklyScheduleForm.controls[day].controls.open.invalid"
+                  type="time"
+                  [value]="form.value[day].open"
+                  formControlName="open"
+                  [readOnly]="!isLocationEditorSig()"
+                />
+                @if (weeklyScheduleForm.controls[day].controls.open.hasError("required")) {
+                  <div class="alert">Time is required.</div>
+                }
+              </div>
+            </div>
+            <div class="mobile-card-column">
+              <div class="mobile-pretext">to</div>
+              <div class="mobile-pretext">to</div>
+            </div>
+            <div class="mobile-card-column">
+              <div class="mobile-time-input-wrapper">
+                <input
+                  class="mobile-time-input"
+                  [class.invalid]="weeklyScheduleForm.controls[day].controls.end.invalid"
+                  type="time"
+                  [value]="form.value[day].end"
+                  formControlName="end"
+                  [readOnly]="!isLocationEditorSig()"
+                />
+                @if (weeklyScheduleForm.controls[day].controls.end.hasError("required")) {
+                  <div class="alert">Time is required.</div>
+                }
+              </div>
+              <div class="mobile-time-input-wrapper">
+                <input
+                  class="mobile-time-input"
+                  [class.invalid]="weeklyScheduleForm.controls[day].controls.close.invalid"
+                  type="time"
+                  [value]="form.value[day].close"
+                  formControlName="close"
+                  [readOnly]="!isLocationEditorSig()"
+                />
+                @if (weeklyScheduleForm.controls[day].controls.close.hasError("required")) {
+                  <div class="alert">Time is required.</div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <div class="form-actions">
+    <button
+      type="submit"
+      class="button"
+      [disabled]="!isLocationEditorSig() || form.invalid"
+      [title]="isLocationEditorSig() ? '' : 'You do not have enough permissions for this action'"
+    >
+      @if (isSubmittingSig()) {
+        <mat-spinner class="loader white-fill" [diameter]="17"></mat-spinner>
+      } @else {
+        <span>Save Schedule</span>
+      }
+    </button>
+  </div>
+</form>
+@if (isLoadingSig()) {
+  <mat-spinner class="loader"></mat-spinner>
+}

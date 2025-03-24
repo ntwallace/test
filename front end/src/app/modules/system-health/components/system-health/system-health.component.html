@@ -1,0 +1,62 @@
+<div class="system-health-wrapper">
+  <div class="system-health-title-wrapper">
+    <div class="system-health-title">System Health</div>
+    <button
+      #select_trigger="matMenuTrigger"
+      class="filter-button"
+      [matMenuTriggerFor]="selectMenu"
+      [class.is-open]="select_trigger.menuOpen"
+      [disabled]="panelListSig().length === 0"
+    >
+      <mat-icon>tune</mat-icon>
+      @if (isLoadingPanelsSig()) {
+        <mat-spinner class="loader" diameter="20"></mat-spinner>
+      } @else {
+        <span class="filter-title">{{ selectedPanelSig()?.name || "--" }}</span>
+      }
+      <mat-icon class="icon-arrow">expand_less</mat-icon>
+    </button>
+    <mat-menu #selectMenu="matMenu" xPosition="after">
+      <ul class="mat-menu-list list">
+        @for (panel of panelListSig(); track panel.id) {
+          <li
+            class="mat-menu-item"
+            [class.active]="panel.id === selectedPanelSig().id"
+            (click)="changePanel(panel)"
+          >
+            {{ panel.name }}
+          </li>
+        }
+      </ul>
+    </mat-menu>
+  </div>
+  <div class="system-health-chart-wrapper">
+    @if (isLoadingSig()) {
+      <mat-spinner class="loader"></mat-spinner>
+    }
+    @if (panelDataSig() && !isLoadingSig()) {
+      <div class="system-health-legend">
+        @for (phase of panelDataSig().phases; track $index) {
+          <div class="system-health-legend-item">
+            <div
+              class="system-health-legend-marker"
+              [ngStyle]="{ 'background-color': changeItemColor(phase.name) }"
+            ></div>
+            <div class="system-health-legend-name">Phase {{ phase?.name || "--" }}</div>
+            <div class="system-health-legend-watt">
+              {{ (phase?.watt_second | kiloFormat: 0 : 1) || "--" }}W
+            </div>
+            @if (phase?.voltage) {
+              <div class="system-health-legend-voltage">{{ phase.voltage | number: "0.0-1" }}V</div>
+            }
+          </div>
+        }
+      </div>
+      <div id="system-health-chart" [chart]="chart" class="system-health-chart"></div>
+      <div class="system-health-frequency">
+        <div class="system-health-legend-name">Frequency</div>
+        <div class="system-health-legend-frequency">{{ panelDataSig().frequency || "--" }} Hz</div>
+      </div>
+    }
+  </div>
+</div>

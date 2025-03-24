@@ -1,0 +1,276 @@
+<div class="modal">
+  <button class="close-button" mat-dialog-close [disabled]="isSubmittingSig()">
+    <mat-icon class="icon-close">close</mat-icon>
+  </button>
+  <div class="modal-title">{{ data.name }}</div>
+  <div class="current-settings-wrapper">
+    <div class="current-temp-wrapper">
+      <div>Current Temperature</div>
+      <div class="temp-value-wrapper">
+        @if (data?.zoneAir !== undefined && data?.zoneAir !== null) {
+          <span>{{ data.zoneAir | number: "0.0-1" }}</span>
+          <span class="temp-unit"><sup>&#9900;</sup>F</span>
+        } @else {
+          N/A
+        }
+      </div>
+    </div>
+    <div class="current-scehdule-wrapper">
+      <div>Current Schedule</div>
+      <div class="schedule-name" [title]="data?.currentSchedule?.name || 'None Set'">
+        @if (data.currentSchedule) {
+          {{ data.currentSchedule.name }}
+        } @else {
+          None Set
+        }
+      </div>
+    </div>
+  </div>
+  <div class="set-point-box" #setPointBox [class.slider-box]="modeControl.value === 'Auto'">
+    @if (modeControl.value === "Auto") {
+      <mat-slider
+        class="custom-mat-slider autochangeover-slider"
+        [min]="axisRange?.low || 45"
+        [max]="axisRange?.high || 95"
+      >
+        <div class="slider-heating-label" [ngStyle]="{ left: heatingLabelPositionSig() }">
+          {{ setPointHeatingFControl.value }}<span style="font-size: 11px">&deg;F</span>
+        </div>
+        <input
+          [formControl]="setPointHeatingFControl"
+          matSliderStartThumb
+          #startThumb
+          (dragEnd)="removeThumbFocus(startThumb)"
+          (valueChange)="validateHeatingSetPoint($event)"
+        />
+        <div class="slider-cooling-label" [ngStyle]="{ left: coolingLabelPositionSig() }">
+          {{ setPointCoolingFControl.value }}<span style="font-size: 11px">&deg;F</span>
+        </div>
+        <input
+          [formControl]="setPointCoolingFControl"
+          matSliderEndThumb
+          #endThumb
+          (dragEnd)="removeThumbFocus(endThumb)"
+          (valueChange)="validateCoolingSetPoint($event)"
+        />
+        <div class="ticks">
+          @for (tick of tickList; track $index) {
+            <span class="tick">
+              @if (tick % 10 === 0) {
+                {{ tick }}
+              }
+            </span>
+          }
+        </div>
+      </mat-slider>
+    } @else {
+      <div class="set-point">
+        @if (setPointSig()) {
+          <span>{{ setPointSig() | number: "0.0-0" }}</span>
+          <span class="set-point-unit"><sup>&#9900;</sup>F</span>
+        } @else {
+          N/A
+        }
+      </div>
+      <div class="set-point-control">
+        <button
+          type="button"
+          class="arrow-btn"
+          (click)="incrementSetPoint()"
+          (mousedown)="mousedownIncrement()"
+          (touchstart)="mousedownIncrement()"
+          (touchend)="clearInterval()"
+          (touchcancel)="clearInterval()"
+          (mouseup)="clearInterval()"
+          (mouseleave)="clearInterval()"
+        >
+          <svg class="icon">
+            <use href="assets/images/icons/sprite.svg#icon-triangle-up"></use>
+          </svg>
+        </button>
+        <button
+          type="button"
+          class="arrow-btn"
+          (click)="decrementSetPoint()"
+          (mousedown)="mousedownDecrement()"
+          (touchstart)="mousedownDecrement()"
+          (touchend)="clearInterval()"
+          (touchcancel)="clearInterval()"
+          (mouseup)="clearInterval()"
+          (mouseleave)="clearInterval()"
+        >
+          <svg class="icon">
+            <use href="assets/images/icons/sprite.svg#icon-triangle-down"></use>
+          </svg>
+        </button>
+      </div>
+    }
+  </div>
+  <div class="selectors-wrapper">
+    <mat-form-field
+      class="form-control-mode"
+      appearance="outline"
+      [class.is-open]="selectModeMenu.panelOpen"
+    >
+      <mat-select
+        #selectModeMenu
+        [formControl]="modeControl"
+        panelClass="warning-select"
+        (selectionChange)="disableFanMode($event)"
+      >
+        <mat-select-trigger class="mat-select-trigger">
+          @switch (modeControl.value) {
+            @case ("Cooling") {
+              <svg class="icon-cool">
+                <use href="assets/images/icons/sprite.svg#icon-cold"></use>
+              </svg>
+            }
+            @case ("Heating") {
+              <svg class="icon-heat">
+                <use href="assets/images/icons/sprite.svg#icon-fire"></use>
+              </svg>
+            }
+            @case ("Off") {
+              <svg class="icon-off">
+                <use href="assets/images/icons/sprite.svg#icon-off"></use>
+              </svg>
+            }
+            @case ("Auto") {
+              <div class="icon-auto-wrapper">
+                <img
+                  class="icon-autochangeover"
+                  src="assets/images/icons/autochangeover.svg"
+                  alt=""
+                />
+              </div>
+            }
+          }
+          {{ modeControl.value }}
+        </mat-select-trigger>
+        @for (mode of modeList; track mode) {
+          <mat-option [value]="mode" class="mat-select-option">
+            @switch (mode) {
+              @case ("Cooling") {
+                <svg class="icon-cool">
+                  <use href="assets/images/icons/sprite.svg#icon-cold"></use>
+                </svg>
+              }
+              @case ("Heating") {
+                <svg class="icon-heat">
+                  <use href="assets/images/icons/sprite.svg#icon-fire"></use>
+                </svg>
+              }
+              @case ("Off") {
+                <svg class="icon-off">
+                  <use href="assets/images/icons/sprite.svg#icon-off"></use>
+                </svg>
+              }
+              @case ("Auto") {
+                <div class="icon-auto-wrapper">
+                  <img
+                    class="icon-autochangeover"
+                    src="assets/images/icons/autochangeover.svg"
+                    alt=""
+                  />
+                </div>
+              }
+            }
+            {{ mode }}
+          </mat-option>
+        }
+      </mat-select>
+      <mat-icon class="icon-arrow" matSuffix>expand_less</mat-icon>
+    </mat-form-field>
+    <mat-form-field
+      class="form-control-fan"
+      appearance="outline"
+      [class.is-open]="selectFanMenu.panelOpen"
+    >
+      <mat-select #selectFanMenu [formControl]="fanControl" panelClass="warning-select">
+        <mat-select-trigger class="mat-select-trigger">
+          <div class="icon-fan-wrapper">
+            <svg class="icon-fan">
+              <use href="assets/images/icons/sprite.svg#icon-fan"></use>
+            </svg>
+          </div>
+          {{ fanControl.value === "AlwaysOn" ? "Always On" : "Auto Off" }}
+        </mat-select-trigger>
+        @for (mode of fanModeList; track mode) {
+          <mat-option [value]="mode" class="mat-select-option">
+            <div class="icon-fan-wrapper">
+              <svg class="icon-fan">
+                <use href="assets/images/icons/sprite.svg#icon-fan"></use>
+              </svg>
+            </div>
+            {{ mode === "AlwaysOn" ? "Always On" : "Auto Off" }}
+          </mat-option>
+        }
+      </mat-select>
+      <mat-icon class="icon-arrow" matSuffix>expand_less</mat-icon>
+    </mat-form-field>
+  </div>
+  @if (isShowMaximumErrorSig()) {
+    <div class="alert">Maximum range between setpoints in auto mode is {{ maxRange }} degrees.</div>
+  }
+  @if (isShowMinimumErrorSig()) {
+    <div class="alert">Minimum range between setpoints in auto mode is {{ minRange }} degrees.</div>
+  }
+  <div class="message">
+    @if (isLoadingSig()) {
+      <mat-spinner class="loader" [diameter]="18"></mat-spinner>
+    } @else {
+      @switch (modeControl.getRawValue()) {
+        @case ("Off") {
+          @if (nextEventSig()) {
+            {{ data.name }} will be turned off until the next scheduled event
+            @if (isNotTodayTomorrowSig()) {
+              on
+            }
+            {{ nextEventSig() | convertTime: timezoneSig() : !isNotTodayTomorrowSig() }}
+          } @else {
+            {{ data.name }} will be turned off until a schedule is created or another temporary
+            override is set.
+          }
+        }
+        @case ("Auto") {
+          @if (nextEventSig()) {
+            Temperature will be kept between {{ setPointHeatingFControl.value }} and
+            {{ setPointCoolingFControl.value }} until the next scheduled event
+            @if (isNotTodayTomorrowSig()) {
+              on
+            }
+            {{ nextEventSig() | convertTime: timezoneSig() : !isNotTodayTomorrowSig() }}
+          } @else {
+            Temperature will be kept between 'heating setpoint' and 'cooling setpoint' until a
+            schedule is created or another temporary override is set.
+          }
+        }
+        @default {
+          @if (nextEventSig()) {
+            {{ modeControl.value }} will be set to {{ setPointSig() | number: "0.0-0" }}&deg; until
+            the next scheduled event
+            @if (isNotTodayTomorrowSig()) {
+              on
+            }
+            {{ nextEventSig() | convertTime: timezoneSig() : !isNotTodayTomorrowSig() }}
+          } @else {
+            {{ modeControl.value }} will be set to {{ setPointSig() | number: "0.0-0" }}&deg; until
+            a schedule is created or another temporary override is set.
+          }
+        }
+      }
+    }
+  </div>
+  <button
+    type="button"
+    class="button submit-button"
+    (click)="onSubmit()"
+    [disabled]="isSubmittingSig()"
+  >
+    @if (isSubmittingSig()) {
+      <mat-spinner class="loader white-fill" [diameter]="18"></mat-spinner>
+    } @else {
+      <span>Save</span>
+    }
+  </button>
+</div>

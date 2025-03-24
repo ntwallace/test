@@ -1,0 +1,270 @@
+@use "assets/common/sass/variables" as *;
+
+.zone-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 2rem 1rem;
+  border: 1px solid var(--border-grey);
+  border-radius: 0.5rem;
+
+  -webkit-box-shadow: 0px 2px 5px 0px #d2d5d7;
+  -moz-box-shadow: 0px 2px 5px 0px #d2d5d7;
+  box-shadow: 0px 2px 5px 0px #d2d5d7;
+
+  &.hold {
+    background-color: var(--bg-danger);
+    border: 1px solid var(--border-danger);
+  }
+
+  &:not(.hold).off {
+    background-color: var(--bg-gray);
+    border: 1px solid var(--text-light-gray);
+  }
+}
+
+.zone-overlay {
+  z-index: 5;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding: 2rem 1rem;
+  border-radius: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(3px);
+}
+
+.action-btn-wrapper {
+  z-index: 10;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  left: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.status-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.widget-title {
+  @include truncate;
+
+  max-width: 100%;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.current-temp-value {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin-top: 1rem;
+  font-size: 32px;
+  font-weight: 700;
+
+  &-unit {
+    font-size: 24px;
+  }
+}
+
+.set-temp-wrapper {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.set-temp-value {
+  display: flex;
+  align-items: baseline;
+  white-space: nowrap;
+
+  &-unit {
+    font-size: 16px;
+  }
+}
+
+.none-set-schedule {
+  color: var(--text-danger);
+}
+
+.current-schedule,
+.schedule-title {
+  text-align: center;
+}
+
+.schedule-title {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.current-schedule {
+  margin-top: 0.25rem;
+  font-size: 14px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.schedule-next-event {
+  @include truncate;
+
+  margin-top: 0.25rem;
+  max-width: 100%;
+  height: 14px;
+  line-height: 1;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.override-icon-wrapper {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.divider-top {
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.divider-bottom {
+  margin-top: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.icon-locked,
+.icon-unlocked {
+  width: 18px;
+  height: 18px;
+}
+
+.icon-hold-override,
+.icon-cool,
+.icon-heat,
+.icon-off,
+.icon-auto-wrapper {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.icon-auto-wrapper {
+  position: relative;
+}
+
+.icon-autochangeover {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 24px;
+  width: 24px;
+}
+
+.icon-unlocked,
+.icon-cool {
+  color: var(--primary);
+}
+
+.icon-heat {
+  color: var(--text-danger);
+}
+
+.icon-off {
+  color: var(--text-light-gray);
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem;
+  border: none;
+  outline: none;
+  background: unset;
+  cursor: pointer;
+  color: var(--text-gray);
+  transition: color 0.2s var(--time-function);
+
+  &:disabled {
+    color: var(--icon-grey);
+    cursor: no-drop;
+  }
+
+  &:not([disabled]):hover,
+  &:not([disabled]):focus {
+    color: var(--primary);
+  }
+
+  &.settings-btn {
+    margin-left: auto;
+  }
+}
+
+.action-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.button.danger {
+  padding: 0.5rem 1rem;
+  font-size: 14px;
+}
+
+.button-set-hold {
+  padding: 0.5rem 1rem;
+  background-color: var(--text-light-gray);
+  border: 1px solid var(--text-light-gray);
+  font-size: 14px;
+
+  &:hover,
+  &:focus {
+    background-color: var(--text-gray);
+  }
+}
+
+.error {
+  margin: auto;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.connection-lost {
+  @include truncate;
+  max-width: 100%;
+  margin-top: 0.75rem;
+  font-weight: 700;
+}
+
+.last-connection {
+  @include truncate;
+  max-width: 100%;
+  margin-top: 0.2rem;
+  height: 13px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.icon-warning-triangle {
+  margin-top: 4rem;
+  width: 80px;
+  height: 80px;
+  color: red;
+  filter: drop-shadow(0 0.2rem 0.1rem var(--border-grey));
+}

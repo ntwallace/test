@@ -1,0 +1,34 @@
+<div class="content-title">Time of Use Rates</div>
+<div class="content-subtitle">
+  These rates will override the electricity cost during set period.
+</div>
+<button
+  type="button"
+  class="button"
+  [disabled]="!isLocationEditorSig() || (isLoading$ | async)"
+  (click)="openModal()"
+  [title]="isLocationEditorSig() ? '' : 'You do not have enough permissions for this action'"
+>
+  <span *ngIf="(isLoading$ | async) === false">Add New Rate</span>
+  <mat-spinner *ngIf="isLoading$ | async" class="loader" [diameter]="18"></mat-spinner>
+</button>
+<div class="tabs-section" *ngIf="activeRates.length || historicRates.length">
+  <div class="tabs-wrapper">
+    <ng-container *ngFor="let view of rateViews">
+      <div class="tab-item" [class.active]="selectedView === view.value" (click)="changeView(view)">
+        <div class="tab-title">
+          {{ view.label }}
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+<div class="table-responsive" *ngIf="activeRates.length || historicRates.length">
+  <app-tou-rates-table
+    style="width: 100%"
+    *ngIf="(isLoading$ | async) === false"
+    [data]="selectedView === 'active' ? activeRates : historicRates"
+    (archiveRateEvent)="archiveTouRate($event)"
+  ></app-tou-rates-table>
+  <mat-spinner *ngIf="isLoading$ | async" diameter="80"></mat-spinner>
+</div>

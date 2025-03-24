@@ -1,0 +1,63 @@
+.widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.widget-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.widget-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  min-height: 322px;
+  margin-top: 1rem;
+}
+
+.zone-card {
+  width: 100%;
+}
+
+.no-data {
+  margin: auto;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.loader {
+  margin-top: 2rem;
+}
+
+.button {
+  font-size: 14px;
+  padding: 0.5rem 1rem;
+  min-width: 130px;
+}
+
+@media (min-width: 480px) {
+  .zone-card {
+    width: calc((100% - 1rem) / 2);
+  }
+}
+
+@media (min-width: 768px) {
+  .zone-card {
+    width: calc((100% - 3rem) / 4);
+  }
+}
+
+@media (min-width: 1280px) {
+  .zone-card {
+    width: calc((100% - 4rem) / 5);
+  }
+}
+
+@media (min-width: 1920px) {
+  .zone-card {
+    width: calc((100% - 5rem) / 6);
+  }
+}

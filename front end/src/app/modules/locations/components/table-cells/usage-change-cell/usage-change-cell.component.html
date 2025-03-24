@@ -1,0 +1,23 @@
+@if (usageChange.isLoading) {
+  <ngx-skeleton-loader />
+} @else {
+  @if (messageSig()) {
+    {{ messageSig() }}
+  } @else if (usageChangeSig() === null) {
+    -
+  } @else {
+    <span
+      [ngClass]="{ 'decrease-value': usageChangeSig() < 0, 'increase-value': usageChangeSig() > 0 }"
+    >
+      @if (usageChangeSig() > 0) {
+        &uarr;
+      } @else if (usageChangeSig() < 0) {
+        &darr;
+      }
+      {{
+        usageChangeSig()
+          | percent: (usageChangeSig() > -0.01 && usageChangeSig() < 0.01 ? "0.2-2" : "0.0-0")
+      }}
+    </span>
+  }
+}

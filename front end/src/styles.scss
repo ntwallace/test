@@ -1,0 +1,15 @@
+/* You can add global styles to this file, and also import other style files */
+@import "./assets/common/sass/variables";
+@import "./assets/common/sass/breakpoint";
+@import "./assets/common/sass/visually-hidden";
+
+@import "./assets/common/sass/common";
+@import "./assets/common/sass/container";
+
+@import "./assets/common/sass/header";
+@import "./assets/common/sass/button";
+@import "./assets/common/sass/datepicker";
+@import "./assets/common/sass/table";
+@import "./assets/common/sass/tabs";
+
+@import "./assets/common/sass/material";

@@ -1,0 +1,227 @@
+.mat-mdc-menu-content {
+  min-width: 160px;
+}
+
+.mat-menu-checkbox.mat-mdc-checkbox {
+  .mdc-form-field {
+    width: 100%;
+  }
+  .mdc-label {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+}
+
+.mat-mdc-checkbox {
+  .mdc-checkbox__ripple {
+    background: transparent !important;
+  }
+  label {
+    font-weight: 500;
+  }
+  &-checked {
+    background-color: var(--bg-light-blue);
+    label {
+      color: var(--primary);
+    }
+  }
+}
+
+.mat-icon {
+  color: var(--icon-grey);
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+  border-color: var(--border-grey);
+  transition: border-color 0.25s var(--time-function);
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover
+  .mdc-notched-outline
+  .mdc-notched-outline__leading,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover
+  .mdc-notched-outline
+  .mdc-notched-outline__notch,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled):not(.mdc-text-field--focused):hover
+  .mdc-notched-outline
+  .mdc-notched-outline__trailing {
+  border-color: var(--primary);
+}
+
+.mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floating-label {
+  top: 26px;
+}
+
+.mat-mdc-form-field .mat-mdc-floating-label.mdc-floating-label {
+  line-height: 1.5 !important;
+}
+
+// ============== Select Modal ==============
+.mat-mdc-form-field-subscript-wrapper {
+  display: none;
+  height: 0;
+  overflow: hidden;
+}
+
+.select-wrapper .mat-mdc-select-arrow-wrapper {
+  display: none;
+}
+
+.mat-mdc-form-field.mat-focused.mat-primary .mat-mdc-select-arrow {
+  color: var(--primary);
+}
+
+.warning-select .mat-pseudo-checkbox {
+  display: none;
+}
+
+.form-control-event-mode,
+.form-control-warning,
+.form-control-mode,
+.form-control-fan {
+  & .mat-mdc-select-arrow {
+    display: none;
+  }
+
+  & .mat-mdc-select-value {
+    color: var(--main-font-color);
+  }
+}
+
+.selection-list {
+  &.mdc-list {
+    padding: 0;
+  }
+  & .mdc-list-item--with-leading-checkbox .mdc-list-item__start {
+    margin-left: 0;
+    margin-right: 1rem;
+  }
+  & .mat-mdc-list-item.mdc-list-item--with-leading-checkbox.mdc-list-item--with-one-line {
+    height: auto;
+  }
+
+  & .mat-mdc-list-option .mdc-checkbox {
+    padding: 8px 0;
+  }
+
+  & .mat-mdc-list-option .mdc-checkbox .mdc-checkbox__background {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
+.date-controls-wrapper .mat-mdc-floating-label {
+  font-size: 14px;
+}
+
+// =============== Mat Select ===============
+.form-control-event-mode {
+  & .mat-mdc-text-field-wrapper.mdc-text-field--outlined .mat-mdc-form-field-infix {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    width: unset;
+    min-height: 48px;
+  }
+
+  & .mat-mdc-form-field-icon-suffix > .mat-icon {
+    padding: 10px;
+  }
+}
+
+.mat-select-option .mdc-list-item__primary-text {
+  display: flex;
+  align-items: center;
+  column-gap: 0.75rem;
+}
+
+.form-control-mode,
+.form-control-fan {
+  .mat-mdc-select {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.mat-select-trigger {
+  display: flex;
+  align-items: center;
+  column-gap: 0.75rem;
+  font-weight: 600;
+}
+
+.form-control-fan {
+  &.mat-form-field-disabled {
+    cursor: not-allowed;
+  }
+  .mat-mdc-select-disabled .icon-fan {
+    color: var(--text-light-gray);
+  }
+}
+
+// =============== Mat Slider ===============
+.mat-mdc-slider .mdc-slider__thumb-knob {
+  border-width: none;
+  border-radius: 50%;
+}
+
+.autochangeover-slider.mat-mdc-slider.mat-primary {
+  & .mdc-slider__track--inactive {
+    opacity: 1;
+  }
+  & .mdc-slider__thumb {
+    & .mdc-slider__thumb-knob {
+      border: none;
+      box-shadow: none;
+      background-color: white;
+      background-image: url("../images/icons/cold.svg");
+      background-size: 14px 14px;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    &:nth-child(odd) {
+      .mdc-slider__thumb-knob {
+        background-image: url("../images/icons/fire.svg");
+      }
+    }
+  }
+}
+
+.custom-mat-slider.mdc-slider .mdc-slider__thumb {
+  left: -20px;
+  top: 4px;
+  height: 40px;
+  width: 40px;
+
+  & .mat-ripple.mat-mdc-focus-indicator {
+    border-radius: 50%;
+  }
+
+  & .mat-mdc-slider-visual-thumb.mat-ripple {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+// ============== Manage Users Location Mat Menu ==============
+.location-menu {
+  &.mat-mdc-menu-panel.mat-mdc-menu-panel {
+    max-width: 340px;
+  }
+
+  & .mat-mdc-menu-content {
+    padding: 0;
+  }
+}

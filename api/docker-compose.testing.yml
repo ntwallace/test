@@ -1,0 +1,50 @@
+name: powerx-testing
+
+services:
+  # PowerX API
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile.testing
+    command: sh -c "alembic upgrade head && pytest"
+    ports:
+      - "8001:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DEBUG=1
+      - PX_LOGGING_LEVEL=INFO
+    env_file:
+      - ./envs/.env.testing
+    volumes:
+      - ./app:/app/app
+      - ./tests:/app/tests
+      - ./alembic:/app/alembic
+    networks:
+      - app-network
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16.8
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_DB: ${POWERX_DATABASE_NAME}
+      POSTGRES_USER: ${POWERX_DATABASE_USER}
+      POSTGRES_PASSWORD: ${POWERX_DATABASE_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
+volumes:
+  postgres_data:

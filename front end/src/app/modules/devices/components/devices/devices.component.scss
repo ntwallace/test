@@ -1,0 +1,112 @@
+.row-wrapper {
+  .mat-mdc-cell {
+    border-bottom: 1px solid var(--border-grey);
+    border-top: 1px solid var(--border-grey);
+  }
+
+  .mat-mdc-cell:first-child {
+    border-left: 1px solid var(--border-grey);
+    border-bottom-left-radius: 8px;
+    border-top-left-radius: 8px;
+  }
+
+  .mat-mdc-cell:last-child {
+    border-right: 1px solid var(--border-grey);
+    border-bottom-right-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+}
+
+.table-responsive {
+  margin-top: 60px;
+}
+
+.table {
+  border-collapse: separate;
+  border-spacing: 0 20px;
+}
+
+.device-name-cell {
+  display: flex;
+  align-items: center;
+  column-gap: 2rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.device-name-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 112px;
+}
+
+.device-name-title {
+  font-weight: 700;
+}
+
+.device-name-id {
+  margin-top: 0.5rem;
+  font-weight: 600;
+  font-size: 13px;
+  color: #999999;
+}
+
+.location-cell {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+  font-weight: 700;
+}
+
+.no-data-cell {
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.expand-button {
+  background-color: var(--border-grey);
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  line-height: 1;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 101;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.my-device .mdc-data-table__row:not(:last-child):not(.row-wrapper) .mdc-data-table__cell {
+  border-bottom: 1px solid var(--border-grey);
+}
+
+@media (min-width: 1024px) {
+  .header {
+    padding: 1rem 0.5rem;
+  }
+
+  .table-responsive {
+    padding: 0 0.5rem;
+  }
+}

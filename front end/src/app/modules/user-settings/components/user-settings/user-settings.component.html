@@ -1,0 +1,93 @@
+<div class="content">
+  <div class="content-title">User Settings</div>
+  <div class="content-subtitle">Manage and update account settings.</div>
+  @if (isLoadingSig()) {
+    <mat-spinner class="loader"></mat-spinner>
+  } @else {
+    <form
+      class="form"
+      [formGroup]="userForm"
+      #form="ngForm"
+      (ngSubmit)="$event.preventDefault()"
+      (keyup.enter)="onSubmit()"
+    >
+      <div class="form-control">
+        <label class="label" for="firstName"><span>First Name</span></label>
+        <input
+          id="firstName"
+          formControlName="firstName"
+          type="text"
+          class="form-control-input"
+          placeholder="First Name"
+        />
+        @if (
+          userForm.controls.firstName &&
+          userForm.controls.firstName.touched &&
+          userForm.controls.firstName.hasError("required")
+        ) {
+          <div class="alert"><sup>*</sup>First name is required.</div>
+        }
+      </div>
+      <div class="form-control">
+        <label class="label" for="lastName">Last Name</label>
+        <input
+          id="lastName"
+          formControlName="lastName"
+          type="text"
+          class="form-control-input"
+          placeholder="Last Name"
+        />
+        @if (
+          userForm.controls.lastName &&
+          userForm.controls.lastName.touched &&
+          userForm.controls.lastName.hasError("required")
+        ) {
+          <div class="alert"><sup>*</sup>Last name is required.</div>
+        }
+      </div>
+      <div class="form-control">
+        <label class="label" for="email">Email</label>
+        <input
+          id="email"
+          formControlName="email"
+          type="text"
+          class="form-control-input"
+          placeholder="Email"
+        />
+        @if (userForm.controls.email && userForm.controls.email.touched) {
+          @if (userForm.controls.email.hasError("required")) {
+            <div class="alert"><sup>*</sup>Email is required.</div>
+          }
+          @if (userForm.controls.email.hasError("email")) {
+            <div class="alert"><sup>*</sup>Please enter a valid email address.</div>
+          }
+        }
+      </div>
+      <div class="form-control">
+        <label class="label" for="phone">Phone Number</label>
+        <input
+          id="phone"
+          formControlName="phone"
+          type="text"
+          class="form-control-input-phone"
+          placeholder="xxx-xxx-xxxx"
+          mask="000-000-0000"
+          [showMaskTyped]="true"
+          [validation]="true"
+        />
+        @if (userForm.controls.phone && userForm.controls.phone.dirty) {
+          @if (userForm.controls.phone.hasError("mask")) {
+            <div class="alert"><sup>*</sup>Phone number must contain 10 digits.</div>
+          }
+        }
+      </div>
+    </form>
+  }
+  <button class="button" (click)="onSubmit()" [disabled]="isSubmittingSig() || userForm.invalid">
+    @if (isSubmittingSig()) {
+      <mat-spinner class="loader" [diameter]="18"></mat-spinner>
+    } @else {
+      Save
+    }
+  </button>
+</div>

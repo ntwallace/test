@@ -1,0 +1,219 @@
+<div class="modal">
+  <button class="close-button" mat-dialog-close [disabled]="isSubmitting()">
+    <mat-icon class="icon-close">close</mat-icon>
+  </button>
+  <div class="modal-title">
+    <span>{{ data.name }} Scheduler</span>
+  </div>
+  @if (isShowWarning()) {
+    <p class="warning-message">
+      <span class="warning">Warning:</span>&nbsp;<b>{{ data.name }}</b> has no schedule set for
+      <span [innerHTML]="daysWarningStr()"></span>! Your HVAC will continue to run at the previous
+      setting until the next scheduled event occurs.
+    </p>
+  } @else {
+    <div class="zone-info-wrapper">
+      <div class="current-temp">
+        <div>Current Temp</div>
+        @if (data.zoneAir !== null) {
+          <div class="current-temp-wrapper">
+            <span>{{ data.zoneAir | number: "0.0-1" }}</span>
+            <span class="current-temp-unit">&nbsp;<sup>&#9900;</sup>F</span>
+          </div>
+        } @else {
+          <ng-container *ngTemplateOutlet="NA"></ng-container>
+        }
+      </div>
+      <div class="set-point-info">
+        @if (data.autoMode) {
+          @if (data.autoSetpointCoolingF !== null && data.autoSetpointHeatingF !== null) {
+            <div class="icon-auto-wrapper">
+              <img
+                class="icon-autochangeover"
+                src="assets/images/icons/autochangeover.svg"
+                alt=""
+              />
+            </div>
+            <div class="set-temp-value">
+              <span>{{
+                (data.autoSetpointHeatingF | number: "0.0-1") +
+                  " - " +
+                  (data.autoSetpointCoolingF | number: "0.0-1")
+              }}</span>
+              <span class="set-temp-value-unit">&nbsp;<sup>&#9900;</sup>F</span>
+            </div>
+          } @else {
+            <ng-container *ngTemplateOutlet="NA"></ng-container>
+          }
+        } @else {
+          @if (data.hvacStatus !== null) {
+            @switch (data.hvacStatus) {
+              @case ("Cool") {
+                <svg class="icon-cool">
+                  <use href="assets/images/icons/sprite.svg#icon-cold"></use>
+                </svg>
+              }
+              @case ("Heat") {
+                <svg class="icon-heat">
+                  <use href="assets/images/icons/sprite.svg#icon-fire"></use>
+                </svg>
+              }
+              @case ("Off") {
+                <svg class="icon-off">
+                  <use href="assets/images/icons/sprite.svg#icon-off"></use>
+                </svg>
+                <div class="set-temp-value">Off</div>
+              }
+            }
+            @if (data.hvacStatus !== "Off") {
+              <div class="set-temp-value">
+                @if (data.setPoint !== null) {
+                  <span>{{ data.setPoint | number: "0.0-1" }}</span>
+                  <span class="set-temp-value-unit">&nbsp;<sup>&#9900;</sup>F</span>
+                } @else {
+                  <ng-container *ngTemplateOutlet="NA"></ng-container>
+                }
+              </div>
+            }
+          } @else {
+            <ng-container *ngTemplateOutlet="NA"></ng-container>
+          }
+        }
+      </div>
+    </div>
+  }
+  <div class="days-button-wrapper">
+    @for (day of dayTabs(); track $index) {
+      <button
+        type="button"
+        class="day-btn"
+        [disabled]="isSubmitting()"
+        [ngClass]="{
+          'no-schedule': !isLoading() && !day.hasSchedule && !scheduleSet().has(day.value),
+          'active-no-schedule':
+            !isLoading() && !isEdit() && selectedDay() === day.value && !day.hasSchedule,
+          active:
+            (!isLoading() && !isEdit() && selectedDay() === day.value && day.hasSchedule) ||
+            (isEdit() && scheduleSet().has(day.value))
+        }"
+        (click)="isEdit() ? toggleSelectSet(day.value) : changeDay(day.value)"
+      >
+        {{ day.label }}
+      </button>
+    }
+  </div>
+  @if (isLoading()) {
+    <mat-spinner class="loader main-loader" [diameter]="80"></mat-spinner>
+  } @else {
+    <div class="schedule-wrapper">
+      <div class="schedule-title">
+        @if (isEdit() || activeSchedule()) {
+          <span>{{ isEdit() ? "Set " : "Current " }}Schedule:&nbsp;</span>
+        }
+        @if (isEdit()) {
+          <mat-form-field
+            class="form-control-event-mode"
+            appearance="outline"
+            [class.is-open]="selectMenu.panelOpen"
+          >
+            <mat-select
+              placeholder="Select schedule..."
+              #selectMenu
+              [ngModel]="activeSchedule()"
+              (ngModelChange)="selectedSchedule.set($event)"
+              panelClass="warning-select"
+              [disabled]="isSubmitting()"
+            >
+              @for (schedule of scheduleList(); track $index) {
+                <mat-option [value]="schedule">{{ schedule.name }}</mat-option>
+              }
+            </mat-select>
+            <mat-icon class="icon-arrow" matSuffix>expand_less</mat-icon>
+          </mat-form-field>
+        } @else {
+          @if (activeSchedule()) {
+            <span class="schedule-name">{{ activeSchedule()?.name || "N/A" }}</span>
+          } @else {
+            No Schedule Set for {{ selectedDayName() }}
+          }
+        }
+      </div>
+      @if (activeSchedule()) {
+        <ul class="event-list list">
+          @for (event of activeSchedule().events; track $index) {
+            <li class="event-item">
+              <div class="time">{{ event.time | convert24To12Format }}</div>
+              <div class="set-point-wrapper">
+                @switch (event.mode) {
+                  @case ("Heating") {
+                    <svg class="icon-heat icon-small">
+                      <use href="assets/images/icons/sprite.svg#icon-fire"></use>
+                    </svg>
+                    <div class="set-point">
+                      {{ event.setPointF | number: "0.0-0" }}
+                      <span class="set-point-unit">&nbsp;<sup>&#9900;</sup>F</span>
+                    </div>
+                  }
+                  @case ("Cooling") {
+                    <svg class="icon-cool icon-small">
+                      <use href="assets/images/icons/sprite.svg#icon-cold"></use>
+                    </svg>
+                    <div class="set-point">
+                      {{ event.setPointF | number: "0.0-0" }}
+                      <span class="set-point-unit">&nbsp;<sup>&#9900;</sup>F</span>
+                    </div>
+                  }
+                  @case ("Off") {
+                    <svg class="icon-off icon-small">
+                      <use href="assets/images/icons/sprite.svg#icon-off"></use>
+                    </svg>
+                    <div class="set-point">OFF</div>
+                  }
+                  @case ("Auto") {
+                    <div class="icon-auto-wrapper icon-small">
+                      <img
+                        class="icon-autochangeover"
+                        src="assets/images/icons/autochangeover.svg"
+                        alt=""
+                      />
+                    </div>
+                    <div class="set-point">
+                      {{
+                        (event.setPointHeatingF | number: "0.0-0") +
+                          " - " +
+                          (event.setPointCoolingF | number: "0.0-0")
+                      }}
+                      <span class="set-point-unit">&nbsp;<sup>&#9900;</sup>F</span>
+                    </div>
+                  }
+                  @default {
+                    <div class="set-point">N/A</div>
+                  }
+                }
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+    @if (isEdit() && activeSchedule() && scheduleSet().size > 0) {
+      <div class="schedule-applied-message">
+        {{ activeSchedule().name }} will be applied to {{ daysAppliedStr() }}
+      </div>
+    }
+    <button
+      type="button"
+      class="button"
+      (click)="isEdit() ? updateSchedule() : editSchedule()"
+      [disabled]="isSubmitting()"
+    >
+      @if (isSubmitting()) {
+        <mat-spinner class="loader" [diameter]="18"></mat-spinner>
+      } @else {
+        <span>{{ isEdit() ? "Apply Schedule" : "Change Schedule" }}</span>
+      }
+    </button>
+  }
+</div>
+
+<ng-template #NA>N/A</ng-template>

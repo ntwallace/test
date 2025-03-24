@@ -1,0 +1,27 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 2rem;
+  height: auto;
+  min-height: calc(100vh - 40px);
+}
+
+.main-message {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.btn-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.button {
+  min-width: 120px;
+  padding: 8px 16px;
+  font-size: 14px;
+}

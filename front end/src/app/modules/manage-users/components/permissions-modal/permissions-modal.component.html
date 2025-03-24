@@ -1,0 +1,148 @@
+<div class="permissions-modal">
+  <button [disabled]="isSubmittingSig()" class="close-button" mat-dialog-close>
+    <mat-icon class="icon-close">close</mat-icon>
+  </button>
+  <div class="modal-title">
+    <span>Configure Permissions</span>
+  </div>
+  <div class="modal-sub-title">
+    <span class="user-name">{{ accountNameSig() }}</span>
+    <span class="user-email">{{ accountEmailSig() }}</span>
+  </div>
+  <div class="permissions-content">
+    @if (isLoadingSig()) {
+      <mat-spinner class="loader"></mat-spinner>
+    } @else {
+      <div class="organization-group">
+        <div class="group-title">Organization Level</div>
+        <mat-radio-group
+          aria-labelledby="Organization Level"
+          class="organization-radio-group"
+          [(ngModel)]="organizationRole"
+        >
+          @for (role of organizationRoles; track role.value) {
+            <div class="organization-radio-button-wrapper">
+              <mat-radio-button class="organization-radio-button" [value]="role.value">
+                <span class="role-name">{{ role.label }}</span> -
+                <span class="role-description">{{ role.description }}</span>
+              </mat-radio-button>
+            </div>
+          }
+        </mat-radio-group>
+      </div>
+      <div class="locations-group">
+        <div class="group-title">Locations</div>
+        <mat-radio-group
+          aria-labelledby="Locations"
+          class="organization-radio-group"
+          [(ngModel)]="locationLevel"
+        >
+          @for (option of locationsOptions; track option.value) {
+            <div class="locations-radio-button-wrapper">
+              <mat-radio-button class="organization-radio-button" [value]="option.value">
+                <span class="role-name">{{ option.label }}</span> -
+                <span class="role-description">{{ option.description }}</span>
+              </mat-radio-button>
+              @if (locationLevel === "all" && option.value === "all") {
+                <mat-radio-group
+                  aria-labelledby="all-locations-roles"
+                  class="all-locations-radio-group"
+                  [(ngModel)]="allLocationsRole"
+                >
+                  @for (role of allLocationsRoles; track role.value) {
+                    <mat-radio-button class="all-locations-radio-button" [value]="role.value">
+                      <span class="role-name">{{ role.label }}</span>
+                    </mat-radio-button>
+                  }
+                </mat-radio-group>
+              }
+              @if (locationLevel === "selected" && option.value === "selected") {
+                <table
+                  mat-table
+                  [dataSource]="dataSource"
+                  class="per-location-table table-responsive"
+                >
+                  <ng-container matColumnDef="name">
+                    <th width="50%" mat-header-cell *matHeaderCellDef class="table-header">
+                      Locations
+                    </th>
+                    <td
+                      width="50%"
+                      mat-cell
+                      *matCellDef="let element"
+                      style="padding: 0"
+                      [class.active]="element.checked"
+                    >
+                      <div class="per-location-checkbox-wrapper">
+                        <mat-checkbox
+                          [color]="'primary'"
+                          [(ngModel)]="element.checked"
+                          (ngModelChange)="toggleLocationPermissions($event, element)"
+                        ></mat-checkbox>
+                        <div class="location-detail">
+                          <div class="location-name" [title]="element.name">
+                            {{ element.name }}
+                          </div>
+                          <div class="location-address" [title]="element.address">
+                            {{ element.address }}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="permissions">
+                    <th
+                      width="50%"
+                      mat-header-cell
+                      *matHeaderCellDef
+                      style="text-align: center"
+                      class="table-header"
+                    >
+                      Permissions
+                    </th>
+                    <td
+                      width="50%"
+                      mat-cell
+                      *matCellDef="let element"
+                      [class.active]="element.checked"
+                    >
+                      <mat-radio-group
+                        aria-labelledby="per-location-roles"
+                        class="per-location-radio-group"
+                        [(ngModel)]="element.permission"
+                      >
+                        @for (role of perLocationRoles; track role.value) {
+                          <mat-radio-button
+                            [disabled]="!element.checked"
+                            class="per-location-radio-button"
+                            [value]="role.value"
+                          >
+                            <span class="role-name">{{ role.label }}</span>
+                          </mat-radio-button>
+                        }
+                      </mat-radio-group>
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                </table>
+              }
+            </div>
+          }
+        </mat-radio-group>
+      </div>
+    }
+  </div>
+  <button
+    type="button"
+    class="button submit-button"
+    (click)="onSubmit()"
+    [disabled]="isLoadingSig() || isSubmittingSig()"
+  >
+    @if (isLoadingSig() || isSubmittingSig()) {
+      <mat-spinner class="loader white-fill" [diameter]="18"></mat-spinner>
+    } @else {
+      <span>Save Permissions</span>
+    }
+  </button>
+</div>

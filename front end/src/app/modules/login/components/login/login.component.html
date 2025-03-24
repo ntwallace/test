@@ -1,0 +1,72 @@
+<div class="auth-wrapper">
+  <h1 class="auth-title">Log in</h1>
+  <p class="auth-sub-title" [ngStyle]="{ 'margin-bottom': errorMessageSig() ? '1rem' : '' }">
+    Welcome back! Please enter your email and password to continue.
+  </p>
+  @if (errorMessageSig()) {
+    <p class="error-message">{{ errorMessageSig() }}</p>
+  }
+  <form [formGroup]="form" (keyup.enter)="onSubmit()">
+    <div class="form-control">
+      <label class="form-control-label">Email</label>
+      <div class="form-control-text-wrapper">
+        <input
+          id="email"
+          type="text"
+          class="form-control-input"
+          formControlName="email"
+          placeholder="Enter your email"
+          (input)="removeError()"
+        />
+      </div>
+      @if (isInvalidControl("email")) {
+        <div class="alert">{{ computedEmailErrorMessage() }}</div>
+      }
+    </div>
+    <div class="form-control">
+      <label class="form-control-label">Password</label>
+      <div class="form-control-pass-wrapper">
+        <input
+          id="password"
+          [type]="isShowPassSig() ? 'text' : 'password'"
+          class="form-control-input"
+          formControlName="password"
+          placeholder="Enter your password"
+          (input)="removeError()"
+        />
+        <button type="button" class="eye-button" (click)="toggleShowPassword()">
+          @if (isShowPassSig()) {
+            <svg class="icon">
+              <use href="assets/images/icons/sprite.svg#icon-eye"></use>
+            </svg>
+          } @else {
+            <svg class="icon">
+              <use href="assets/images/icons/sprite.svg#icon-eye-blocked"></use>
+            </svg>
+          }
+        </button>
+      </div>
+      @if (isInvalidControl("password") && form.controls.password.hasError("required")) {
+        <div class="alert">Password is required.</div>
+      }
+    </div>
+  </form>
+  <div class="forgot-password">
+    <a class="forgot-password-link" [routerLink]="['/auth', 'forgot-password']">Forgot Password?</a>
+  </div>
+  <button
+    type="button"
+    class="button submit-button"
+    (click)="onSubmit()"
+    [disabled]="isSubmittingSig() || (form.invalid && form.touched)"
+  >
+    @if (isSubmittingSig()) {
+      <mat-spinner class="loader white-fill" [diameter]="18"></mat-spinner>
+    } @else {
+      Continue
+    }
+  </button>
+  <div class="logo-wrapper">
+    <img class="logo" src="assets/images/x-logo.png" alt="PowerX Logo" width="140" />
+  </div>
+</div>

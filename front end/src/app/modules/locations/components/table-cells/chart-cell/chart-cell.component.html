@@ -1,0 +1,9 @@
+@if (location.isLoading) {
+  <ngx-skeleton-loader />
+} @else {
+  @if (chart === null) {
+    -
+  } @else {
+    <div class="chart-container" [chart]="chart"></div>
+  }
+}

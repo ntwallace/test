@@ -1,0 +1,45 @@
+<div class="content-title">Custom Electricity Cost</div>
+<div class="content-subtitle">
+  PowerX will use the below price to calculate your electricity cost. You can find your electricity
+  cost on your utility bill. If you do not enter your electricity cost we will use your state
+  average cost.
+</div>
+<div class="cost-form-control" *ngIf="(isLoading$ | async) === false">
+  <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+  <label class="cost-form-control-label" for="cost">Dollars/kWh</label>
+  <div class="cost-form-control-wrapper">
+    <input
+      id="cost"
+      type="number"
+      class="cost-form-control-input"
+      [(ngModel)]="cost"
+      (ngModelChange)="removeError()"
+      step="0.01"
+      placeholder="Cost"
+      autocomplete="false"
+      [readOnly]="!isLocationEditorSig()"
+      [title]="isLocationEditorSig() ? '' : 'You do not have enough permissions for this action'"
+    />
+    <span>USD</span>
+  </div>
+</div>
+<mat-spinner
+  *ngIf="isLoading$ | async"
+  style="margin-top: 2rem"
+  class="loader"
+  [diameter]="56"
+></mat-spinner>
+<button
+  type="button"
+  class="button update-btn"
+  (click)="updateCost()"
+  [disabled]="!isLocationEditorSig() || (isSubmitting$ | async)"
+  [title]="isLocationEditorSig() ? '' : 'You do not have enough permissions for this action'"
+>
+  <span *ngIf="(isSubmitting$ | async) === false">Update Cost</span>
+  <mat-spinner *ngIf="isSubmitting$ | async" class="loader" [diameter]="18"></mat-spinner>
+</button>
+<div class="content-subtitle">
+  <b class="content-subtitle-bold">NOTE:</b>&nbsp;The cost that PowerX reports might not match
+  exactly to your utility bill due to taxes, fees, time of use or tiered pricing.
+</div>

@@ -1,0 +1,12 @@
+<div class="topbar">
+  <button type="button" class="burger-btn" (click)="openSidebar()">
+    <svg class="btn-icon" width="28px" height="30px">
+      <use href="assets/images/icons/sprite.svg#icon-menu"></use>
+    </svg>
+  </button>
+  @if (organizationSig()?.logo_url) {
+    <img class="logo" [src]="organizationSig().logo_url" alt="" />
+  } @else {
+    <div class="empty-logo">Add logo</div>
+  }
+</div>

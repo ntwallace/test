@@ -1,0 +1,21 @@
+<div class="widget-header">
+  <div class="widget-title">Zones</div>
+  <button type="button" class="button" (click)="openSchedulesModal()">Manage Schedules</button>
+</div>
+<div class="widget-content">
+  @if (!widgetIds) {
+    <mat-spinner class="loader"></mat-spinner>
+  } @else {
+    @for (zone of zoneList(); track zone.id) {
+      <app-hvac-card
+        [data]="zone.data"
+        [isLoading]="zone.isLoading"
+        (refreshEmit)="loadZoneData(zone.id)"
+        class="zone-card"
+      ></app-hvac-card>
+    }
+  }
+  @if (widgetIds?.length === 0) {
+    <div class="no-data">There are no zones here yet.</div>
+  }
+</div>

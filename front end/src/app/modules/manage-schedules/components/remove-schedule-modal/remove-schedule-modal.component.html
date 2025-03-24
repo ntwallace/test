@@ -1,0 +1,26 @@
+<div class="remove-modal">
+  <div class="modal-title">
+    <span>Delete Schedule</span>
+  </div>
+  @if (isLoadingSig()) {
+    <mat-spinner class="loader" diameter="80"></mat-spinner>
+  } @else {
+    @if (assignmentListSig().length) {
+      <p class="warning-message">
+        <span class="warning">Warning:</span>&nbsp;<b>{{ data.name }}</b> is currently applied to
+        <span [innerHTML]="zonesStringSig()"></span>! Deleting this schedule will remove scheduled
+        HVAC events for these zones.
+      </p>
+    }
+    <p class="modal-text">
+      Are you sure you want to delete <b>{{ data.name }}</b
+      >? This will permanently delete the schedule and all events associated with it.
+    </p>
+    <div class="buttons-wrapper">
+      <button class="button danger" [mat-dialog-close]="false">Cancel</button>
+      <button class="button" [mat-dialog-close]="true" (click)="trackRemoveSchedule()">
+        Confirm
+      </button>
+    </div>
+  }
+</div>

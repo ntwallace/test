@@ -1,0 +1,78 @@
+@use "assets/common/sass/variables" as *;
+
+.widget {
+  &-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    row-gap: 1rem;
+    column-gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  &-title {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  &-selectors {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-left: auto;
+  }
+
+  &-chart {
+    width: 100%;
+    overflow: visible !important;
+  }
+
+  &-no-data,
+  &-no-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 600px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  &-no-zone {
+    background-color: var(--bg-gray);
+    column-gap: 0.25rem;
+  }
+}
+
+.icon-temp,
+.icon-click {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: var(--text-light-gray);
+}
+
+.icon-click {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: var(--main-font-color);
+}
+
+.selected-zone-label {
+  @include truncate;
+}
+
+@media (min-width: 768px) {
+  .widget-header {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+@media (min-width: 1280px) {
+  .widget-selectors {
+    gap: 2rem;
+  }
+}

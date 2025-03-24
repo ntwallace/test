@@ -1,0 +1,28 @@
+<div class="confirmation-modal">
+  <ng-container *ngIf="type === 'user'">
+    <div class="modal-title">
+      <span>Remove User</span>
+    </div>
+    <p class="modal-text">
+      Are you sure you want to remove <span class="accent-text">{{ data.email }}</span> from this
+      organization?
+    </p>
+    <p class="modal-text">
+      By doing so, the user will no longer be able to access the organization or locations within
+      this organization.
+    </p>
+  </ng-container>
+  <ng-container *ngIf="type === 'rate'">
+    <div class="modal-title">
+      <span>Archive Rate</span>
+    </div>
+    <p class="modal-text">Are you sure you want to archive this rate?</p>
+    <p class="modal-text">
+      By doing so we will no longer consider this rate to calculate your energy costs.
+    </p>
+  </ng-container>
+  <div class="buttons-wrapper">
+    <button class="button danger" [mat-dialog-close]="false">Cancel</button>
+    <button class="button" [mat-dialog-close]="true">Confirm</button>
+  </div>
+</div>

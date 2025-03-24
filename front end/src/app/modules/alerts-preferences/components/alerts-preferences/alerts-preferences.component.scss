@@ -1,0 +1,21 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.content-title {
+  color: var(--main-font-color);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: normal;
+}
+
+.content-subtitle {
+  margin-top: 0.75rem;
+  margin-bottom: 2rem;
+  color: var(--text-gray);
+  font-size: 14px;
+  line-height: 1.4;
+}

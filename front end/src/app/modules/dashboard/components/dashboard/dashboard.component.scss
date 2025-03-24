@@ -1,0 +1,116 @@
+.loader-wrapper {
+  display: flex;
+  min-height: calc(100vh - 40px);
+}
+
+.header {
+  padding-top: 0;
+}
+
+.header-title-wrapper {
+  text-align: left;
+  row-gap: 0.125rem;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-buttons-wrapper {
+  margin-right: unset;
+}
+
+.setting-title-button {
+  padding: 0.14rem;
+}
+
+// ============== Dashboard Tabs ==============
+.tabs-section {
+  margin-top: 1rem;
+}
+
+.tab-item {
+  &.active,
+  &:hover,
+  &:focus {
+    .tab-icon-wrapper,
+    .tab-fan-icon-wrapper {
+      background-color: white;
+    }
+
+    .tab-icon {
+      color: var(--primary);
+    }
+  }
+}
+
+.tab-title {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  text-align: unset;
+}
+
+.tab-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-icon-wrapper,
+.tab-fan-icon-wrapper {
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  border-radius: 50%;
+  background-color: var(--bg-gray);
+  overflow: hidden;
+  transition:
+    background-color 0.2s var(--time-function),
+    color 0.2s var(--time-function);
+}
+
+.tab-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--text-light-gray);
+}
+
+.icon-bolt {
+  width: 20px;
+  height: 20px;
+}
+
+.icon-fan {
+  width: 26px;
+  height: 26px;
+}
+
+@media (min-width: 768px) {
+  .header {
+    flex-direction: row;
+  }
+
+  .header-title-wrapper {
+    max-width: 90%;
+  }
+
+  .tab-title {
+    flex-direction: row;
+    align-items: center;
+    column-gap: 0.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tabs-section {
+    margin-top: 0.5rem;
+    padding: 0 0.5rem;
+  }
+
+  .loader-wrapper {
+    min-height: calc(100vh - 100px);
+  }
+}

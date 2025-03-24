@@ -1,0 +1,123 @@
+.system-health {
+  &-wrapper {
+    display: flex;
+    flex-direction: column;
+    row-gap: 2rem;
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: var(--bg-gray);
+  }
+
+  &-chart-wrapper {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.5rem;
+    width: 100%;
+  }
+
+  &-chart {
+    align-self: center;
+  }
+
+  &-title {
+    margin-bottom: 1.75rem;
+    font-size: 18px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  &-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    font-weight: 700;
+    row-gap: 1.5rem;
+
+    &-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      row-gap: 0.75rem;
+      min-width: 90px;
+    }
+
+    &-marker {
+      width: 100%;
+      height: 8px;
+    }
+
+    &-name {
+      font-weight: 400;
+      color: var(--text-gray);
+    }
+
+    &-voltage {
+      font-size: 20px;
+    }
+
+    &-watt {
+      font-size: 22px;
+    }
+
+    &-frequency {
+      font-size: 24px;
+      font-weight: 700;
+    }
+  }
+
+  &-frequency {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 0.75rem;
+  }
+}
+
+.mat-menu-item {
+  min-width: 206px;
+  padding: 0.5rem 1rem;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-top: 1px solid var(--border-light-grey);
+  &:hover,
+  &:focus,
+  &.active {
+    background-color: var(--bg-light-blue);
+  }
+  &:last-child {
+    border-bottom: 1px solid var(--border-light-grey);
+  }
+}
+
+@media (min-width: 576px) {
+  .system-health {
+    &-legend {
+      column-gap: 2.5rem;
+      justify-content: center;
+    }
+  }
+}
+
+@media (min-width: 1280px) {
+  .system-health {
+    &-wrapper {
+      flex-direction: row;
+      align-items: center;
+      height: 240px;
+    }
+
+    &-title-wrapper {
+      height: 100%;
+    }
+
+    &-chart-wrapper {
+      align-items: center;
+      flex-direction: row;
+      justify-content: space-evenly;
+    }
+  }
+}
